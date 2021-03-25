@@ -12,7 +12,6 @@ class DatabaseInfo {
         .then((DataSnapshot snapshot) {
       result = new Map.from(snapshot.value);
     });
-    print("result stock : $result");
     return result;
   }
 }
