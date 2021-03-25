@@ -84,213 +84,250 @@ class _HomeState extends State<Home> {
         centerTitle: true,
       ),
       drawer: MainDrawer(),
-      body: Column(
-        children: [
-          FutureBuilder(
-            future: getAccount(),
-            builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.hasData) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      right: 15.0,
-                      left: 15.0,
-                    ),
-                    child: Text(
-                      "Benvenuto $name !",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w800,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            FutureBuilder(
+              future: getAccount(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        right: 15.0,
+                        left: 15.0,
                       ),
-                      textAlign: TextAlign.center,
+                      child: Text(
+                        "Benvenuto $name !",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
+                  );
+                } else if (snapshot.hasError) {
+                  print("Error : ${snapshot.error}");
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4.0,
+                    backgroundColor: Color.fromARGB(255, 24, 37, 102),
                   ),
                 );
-              } else if (snapshot.hasError) {
-                print("Error : ${snapshot.error}");
-              }
-              return Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 4.0,
-                  backgroundColor: Color.fromARGB(255, 24, 37, 102),
-                ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          CircularProgressIndicator(
-            strokeWidth: 5.0,
-            value: stockPercentage,
-            backgroundColor: Colors.white,
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 24, 37, 102)),
-          ),
-          Center(
-            child: Text(
-              "Percentuale stock libri : $stockPercentage%",
-              style: infoStyle,
+              },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Divider(
-              height: 2,
-              color: Colors.grey,
+            SizedBox(
+              height: 15,
             ),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 15.0),
-                child: Text(
-                  "La Parola Fa Eguali : ",
-                  style: infoStyle,
-                ),
+            CircularProgressIndicator(
+              strokeWidth: 5.0,
+              value: stockPercentage,
+              backgroundColor: Colors.white,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Color.fromARGB(255, 24, 37, 102),
               ),
-              LinearProgressIndicator(
-                minHeight: 5,
-                value: stockParole,
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.deepOrangeAccent[400],
-                ),
-              ),
-              Text(
-                "$stockParole",
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: Text(
+                "Percentuale stock libri : $stockPercentage%",
                 style: infoStyle,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Divider(
-              height: 2,
-              color: Colors.grey,
             ),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 15.0),
-                child: Text(
-                  "L'obbedienza non è una virtù : ",
-                  style: infoStyle,
-                ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Divider(
+                height: 2,
+                color: Colors.grey,
               ),
-              LinearProgressIndicator(
-                minHeight: 5,
-                value: stockObbedienza,
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.green,
-                ),
-              ),
-              Text(
-                "$stockObbedienza",
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, right: 25),
+              child: Text(
+                "La Parola Fa Eguali : ",
                 style: infoStyle,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Divider(
-              height: 2,
-              color: Colors.grey,
             ),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 15.0),
-                child: Text(
-                  "Gianni Pierino : ",
-                  style: infoStyle,
-                ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 250,
+                    child: LinearProgressIndicator(
+                      minHeight: 5,
+                      value: stockParole,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.deepOrangeAccent[400],
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "$stockParole",
+                    style: infoStyle,
+                  ),
+                ],
               ),
-              LinearProgressIndicator(
-                minHeight: 5,
-                value: stockGianni,
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.green,
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Divider(
+                height: 2,
+                color: Colors.grey,
               ),
-              Text(
-                "$stockGianni",
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, left: 15.0),
+              child: Text(
+                "L'obbedienza non è una virtù : ",
                 style: infoStyle,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Divider(
-              height: 2,
-              color: Colors.grey,
             ),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 15.0),
-                child: Text(
-                  "Il Silenzio Diventa Voce : ",
-                  style: infoStyle,
-                ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 250,
+                    child: LinearProgressIndicator(
+                      minHeight: 5,
+                      value: stockObbedienza,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.green,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "$stockObbedienza",
+                    style: infoStyle,
+                  ),
+                ],
               ),
-              LinearProgressIndicator(
-                minHeight: 5,
-                value: stockSilenzio,
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.green,
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Divider(
+                height: 2,
+                color: Colors.grey,
               ),
-              Text(
-                "$stockSilenzio",
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, left: 15.0),
+              child: Text(
+                "Gianni Pierino : ",
                 style: infoStyle,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Divider(
-              height: 2,
-              color: Colors.grey,
             ),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 15.0),
-                child: Text(
-                  "Percorso Didattico : ",
-                  style: infoStyle,
-                ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 250,
+                    child: LinearProgressIndicator(
+                      minHeight: 5,
+                      value: stockGianni,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.green,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "$stockGianni",
+                    style: infoStyle,
+                  ),
+                ],
               ),
-              LinearProgressIndicator(
-                minHeight: 5,
-                value: stockPercorso,
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.green,
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Divider(
+                height: 2,
+                color: Colors.grey,
               ),
-              Text(
-                "$stockPercorso",
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, left: 15.0),
+              child: Text(
+                "Il Silenzio Diventa Voce : ",
                 style: infoStyle,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Divider(
-              height: 2,
-              color: Colors.grey,
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 250,
+                    child: LinearProgressIndicator(
+                      minHeight: 5,
+                      value: stockSilenzio,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.green,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "$stockSilenzio",
+                    style: infoStyle,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Divider(
+                height: 2,
+                color: Colors.grey,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, left: 15.0),
+              child: Text(
+                "Percorso Didattico : ",
+                style: infoStyle,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 250,
+                    child: LinearProgressIndicator(
+                      minHeight: 5,
+                      value: stockPercorso,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.green,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "$stockPercorso",
+                    style: infoStyle,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Divider(
+                height: 2,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

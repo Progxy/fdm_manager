@@ -143,7 +143,6 @@ class _AccessState extends State<Access> {
                           await database
                               .reference()
                               .child(firebaseAuthCheck.uid)
-                              .child("User")
                               .orderByValue()
                               .once()
                               .then((DataSnapshot snapshot) {

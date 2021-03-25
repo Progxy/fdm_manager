@@ -17,7 +17,7 @@ class AccountInfo {
   setFromUserId(database) async {
     await database
         .reference()
-        .child(userId + "/User")
+        .child(userId)
         .once()
         .then((DataSnapshot snapshot) {
       final Map map = snapshot.value.map((a, b) => MapEntry(a, b));
