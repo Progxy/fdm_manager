@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'FdmCreator',
+        title: 'FdmManager',
         theme: ThemeData(
           fontFamily: "Avenir",
           primaryColor: Color.fromARGB(255, 24, 37, 102),
