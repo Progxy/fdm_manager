@@ -1,3 +1,4 @@
+import 'package:fdm_manager/databaseInfo.dart';
 import 'package:fdm_manager/firebaseProjectsManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -124,13 +125,22 @@ class _HomeState extends State<Home> {
             CircularProgressIndicator(
               strokeWidth: 5.0,
               value: stockPercentage,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.grey,
               valueColor: AlwaysStoppedAnimation<Color>(
                 Color.fromARGB(255, 24, 37, 102),
               ),
             ),
             SizedBox(
               height: 10,
+            ),
+            FutureBuilder(
+              future: DatabaseInfo().getStock(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  Container();
+                }
+                return Container();
+              },
             ),
             Center(
               child: Text(
@@ -162,7 +172,7 @@ class _HomeState extends State<Home> {
                     child: LinearProgressIndicator(
                       minHeight: 5,
                       value: stockParole,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.grey,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         Colors.deepOrangeAccent[400],
                       ),
@@ -198,7 +208,7 @@ class _HomeState extends State<Home> {
                     child: LinearProgressIndicator(
                       minHeight: 5,
                       value: stockObbedienza,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.grey,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         Colors.green,
                       ),
@@ -234,9 +244,9 @@ class _HomeState extends State<Home> {
                     child: LinearProgressIndicator(
                       minHeight: 5,
                       value: stockGianni,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.grey,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.green,
+                        Colors.teal,
                       ),
                     ),
                   ),
@@ -270,9 +280,9 @@ class _HomeState extends State<Home> {
                     child: LinearProgressIndicator(
                       minHeight: 5,
                       value: stockSilenzio,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.grey,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.green,
+                        Colors.cyan,
                       ),
                     ),
                   ),
@@ -308,7 +318,7 @@ class _HomeState extends State<Home> {
                       value: stockPercorso,
                       backgroundColor: Colors.white,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.green,
+                        Colors.orange,
                       ),
                     ),
                   ),
