@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/databaseInfo.dart';
+import 'package:fdm_manager/screens/infoRichiesta.dart';
 import 'package:fdm_manager/screens/utilizzo.dart';
 import 'package:flutter/material.dart';
 import 'badConnection.dart';
@@ -19,6 +20,7 @@ class _RichiesteVisitaState extends State<RichiesteVisita> {
     fontWeight: FontWeight.w300,
     color: Colors.grey,
   );
+
   final List<String> choices = <String>[
     "FeedBack",
     "Aiuto",
@@ -40,6 +42,57 @@ class _RichiesteVisitaState extends State<RichiesteVisita> {
     }
   }
 
+  loadRequests(Map data) {
+    final List keys = data.keys.toList();
+    final List values = data.values.toList();
+    List<Widget> result = [];
+    int index = 0;
+    for (var key in keys) {
+      final infoValue = values[index];
+      result.add(
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 25.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, InfoRichiesta.routeName,
+                    arguments: infoValue);
+              },
+              child: Container(
+                width: 300,
+                height: 75,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 10,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    key,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 24, 37, 102),
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      index++;
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +103,7 @@ class _RichiesteVisitaState extends State<RichiesteVisita> {
         title: FittedBox(
           fit: BoxFit.fitWidth,
           child: Text(
-            "richieste Visita",
+            "Richieste Visita",
             style: TextStyle(
               color: Color.fromARGB(255, 192, 192, 192),
               fontWeight: FontWeight.w700,
@@ -90,8 +143,9 @@ class _RichiesteVisitaState extends State<RichiesteVisita> {
               builder: (context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
                   final Map richiesteVisita = snapshot.data;
-                  print("received data  : $richiesteVisita");
-                  return Text("done without errors");
+                  return Column(
+                    children: loadRequests(richiesteVisita),
+                  );
                 } else if (snapshot.hasError) {
                   final err = snapshot.error;
                   return Text("Error  : $err");

@@ -1,5 +1,4 @@
 import 'package:fdm_manager/databaseInfo.dart';
-import 'package:fdm_manager/firebaseProjectsManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -13,9 +12,6 @@ import 'mainDrawer.dart';
 class Home extends StatefulWidget {
   static const String routeName = "/home";
   final FirebaseApp defaultApp = Firebase.app();
-  final FirebaseApp mainApp = FirebaseProjectsManager().getMainApp();
-  final FirebaseApp creatorApp = FirebaseProjectsManager().getCreatorApp();
-  final FirebaseApp desktopApp = FirebaseProjectsManager().getDesktopApp();
 
   @override
   _HomeState createState() => _HomeState();
@@ -32,9 +28,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final FirebaseDatabase database = FirebaseDatabase(app: widget.defaultApp);
-    final FirebaseDatabase mainDb = FirebaseDatabase(app: widget.mainApp);
-    final FirebaseDatabase creatorDb = FirebaseDatabase(app: widget.creatorApp);
-    final FirebaseDatabase desktopDb = FirebaseDatabase(app: widget.desktopApp);
     final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.defaultApp);
     getAccount() async {
       if (name == "Login") {

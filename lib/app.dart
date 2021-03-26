@@ -4,6 +4,7 @@ import 'package:fdm_manager/screens/cambioPassword.dart';
 import 'package:fdm_manager/screens/errorpage.dart';
 import 'package:fdm_manager/screens/feedback.dart';
 import 'package:fdm_manager/screens/home.dart';
+import 'package:fdm_manager/screens/infoRichiesta.dart';
 import 'package:fdm_manager/screens/richiesteVisita.dart';
 import 'package:fdm_manager/screens/utilizzo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
           ErrorPage.routeName: (context) => ErrorPage(),
           CambioPassword.routeName: (context) => CambioPassword(),
           RichiesteVisita.routeName: (context) => RichiesteVisita(),
+          InfoRichiesta.routeName: (context) => InfoRichiesta(),
         },
       ),
     );
