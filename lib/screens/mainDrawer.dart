@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:fdm_manager/screens/richiesteVisita.dart';
 import 'package:flutter/material.dart';
 
 import '../accountInfo.dart';
@@ -93,6 +94,20 @@ class _MainDrawerState extends State<MainDrawer> {
                 } else {
                   Navigator.pushReplacementNamed(
                       context, CambioPassword.routeName);
+                }
+              },
+            ),
+            ListTile(
+              title: Text("Richieste visita", style: TextStyle(fontSize: 23)),
+              onTap: () async {
+                var connectivityResult =
+                    await (Connectivity().checkConnectivity());
+                if (connectivityResult == ConnectivityResult.none) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BadConnection()));
+                } else {
+                  Navigator.pushReplacementNamed(
+                      context, RichiesteVisita.routeName);
                 }
               },
             ),
