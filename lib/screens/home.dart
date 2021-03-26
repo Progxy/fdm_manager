@@ -104,12 +104,7 @@ class _HomeState extends State<Home> {
                 } else if (snapshot.hasError) {
                   print("Error : ${snapshot.error}");
                 }
-                return Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 4.0,
-                    backgroundColor: Color.fromARGB(255, 24, 37, 102),
-                  ),
-                );
+                return Container();
               },
             ),
             SizedBox(
@@ -141,12 +136,16 @@ class _HomeState extends State<Home> {
                       5;
                   return Column(
                     children: [
-                      CircularProgressIndicator(
-                        strokeWidth: 5.0,
-                        value: stockPercentage / 100,
-                        backgroundColor: Colors.grey[300],
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Color.fromARGB(255, 24, 37, 102),
+                      SizedBox(
+                        height: 75,
+                        width: 75,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 7.0,
+                          value: stockPercentage / 100,
+                          backgroundColor: Colors.grey[300],
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color.fromARGB(255, 24, 37, 102),
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -361,17 +360,18 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15.0),
-                        child: Divider(
-                          height: 2,
-                          color: Colors.grey,
-                        ),
+                      SizedBox(
+                        height: 35,
                       ),
                     ],
                   );
                 }
-                return Container();
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4.0,
+                    backgroundColor: Colors.white,
+                  ),
+                );
               },
             ),
           ],
