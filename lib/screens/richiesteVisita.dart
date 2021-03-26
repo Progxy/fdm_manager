@@ -48,7 +48,7 @@ class _RichiesteVisitaState extends State<RichiesteVisita> {
     List<Widget> result = [];
     int index = 0;
     for (var key in keys) {
-      final infoValue = values[index];
+      final List infoValue = [values[index], key];
       result.add(
         Center(
           child: Padding(
