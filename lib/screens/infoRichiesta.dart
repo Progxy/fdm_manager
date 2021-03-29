@@ -281,9 +281,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
     return null;
   }
 
-  accettaOperation(
-      String prenotazioneId, String email, String date, Map infoGroup) async {
+  accettaOperation(String prenotazioneId, String email, Map infoGroup) async {
     bool resultOperation;
+    final String date = infoGroup["data"];
     final Map<String, String> volounteersData = await getVolounteersMails();
     final List<String> volounteersMail = volounteersData.keys.toList();
     List<Widget> containerVolounteers = [];
@@ -606,8 +606,69 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                     ),
                     primary: Color.fromARGB(255, 24, 37, 102),
                   ),
-                  onPressed: () {
-                    //avverti della conferma il richiedente e manda email di conferma ai volontari, inoltre setta tu "si"
+                  onPressed: () async {
+                    final String email = infoRichiesta["email"];
+                    final bool resultRefusing = await accettaOperation(
+                        prenotazioneId, email, infoRichiesta);
+                    if (Platform.isIOS) {
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (BuildContext context) => CupertinoAlertDialog(
+                          title: Text(
+                            "Esito Operazione",
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
+                          ),
+                          content: Text(
+                            resultRefusing
+                                ? "Operazione effetuata con successo !"
+                                : "Ops... Si è verificato un'errore mentre veniva spedita l'email.",
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
+                          ),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: Text(
+                            "Esito Operazione",
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
+                          ),
+                          content: Text(
+                            resultRefusing
+                                ? "Operazione effetuata con successo !"
+                                : "Ops... Si è verificato un'errore mentre veniva spedita l'email.",
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
+                          ),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     "Accetta",
