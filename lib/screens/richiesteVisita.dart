@@ -48,6 +48,9 @@ class _RichiesteVisitaState extends State<RichiesteVisita> {
     List<Widget> result = [];
     int index = 0;
     for (var key in keys) {
+      if (values[index]["presaVisione"] == "si") {
+        continue;
+      }
       final List infoValue = [values[index], key];
       result.add(
         Center(

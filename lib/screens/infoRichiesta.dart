@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:mailer2/mailer.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
@@ -88,6 +90,20 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
     return result;
   }
 
+  getVolounteersMails() async {
+    Map result = {};
+    final database = FirebaseDatabase.instance;
+    await database
+        .reference()
+        .child("Volontari")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
   rifiuto(String motivazione, String email, String prenotazioneId) async {
     final databaseReference =
         FirebaseDatabase.instance.reference().child("Prenotazione");
@@ -97,11 +113,7 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
     final bool resultSend = await sendResponse(
         rifiuto, email, "Rifiuto Richiesta Visita a Barbiana");
     databaseReference.child(prenotazioneId).remove();
-    if (resultSend) {
-      return true;
-    } else {
-      return false;
-    }
+    return resultSend;
   }
 
   refuseOperation(String prenotazioneId, String email) async {
@@ -157,20 +169,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                 final String motivazione = _motivazioneController.text.trim();
                 final bool result =
                     await rifiuto(motivazione, email, prenotazioneId);
-                Navigator.of(context, rootNavigator: true).pop('dialog');
-                resultOperation = result;
-              },
-              child: Text(
-                "Conferma",
-                style: TextStyle(
-                  fontSize: 28,
-                ),
-              ),
-            ),
-            CupertinoDialogAction(
-              onPressed: () async {
                 _motivazioneController.clear();
                 Navigator.of(context, rootNavigator: true).pop('dialog');
+                resultOperation = result;
               },
               child: Text(
                 "Conferma",
@@ -233,6 +234,7 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                 final String motivazione = _motivazioneController.text.trim();
                 final bool result =
                     await rifiuto(motivazione, email, prenotazioneId);
+                _motivazioneController.clear();
                 Navigator.of(context, rootNavigator: true).pop('dialog');
                 resultOperation = result;
               },
@@ -243,18 +245,298 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () async {
-                _motivazioneController.clear();
-              },
-              child: Text(
-                "Conferma",
-                style: TextStyle(
-                  fontSize: 28,
+          ],
+        ),
+      );
+    }
+    return resultOperation;
+  }
+
+  accetta(String email, String date, String prenotazioneId) async {
+    final bool resultSend = await sendResponse(
+        "Richiesta Visita a Barbiana accettata",
+        email,
+        "La vostra richiesta di visita a Barbiana è stata accettata !\n\nVi aspettiamo il $date");
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("Prenotazione");
+    databaseReference.child(prenotazioneId).update({"presaVisione": "si"});
+    return resultSend;
+    //aggiungi testo informativo !
+  }
+
+  getMapValueIndex(value, Map data, bool isValue) {
+    List values = [];
+    if (isValue) {
+      values = data.values.toList();
+    } else {
+      values = data.keys.toList();
+    }
+    int index = 0;
+    for (var val in values) {
+      if (val == value) {
+        return index;
+      }
+      index++;
+    }
+    return null;
+  }
+
+  accettaOperation(
+      String prenotazioneId, String email, String date, Map infoGroup) async {
+    bool resultOperation;
+    final Map<String, String> volounteersData = await getVolounteersMails();
+    final List<String> volounteersMail = volounteersData.keys.toList();
+    List<Widget> containerVolounteers = [];
+    List mailVolounteersChoosen = [];
+    String groupInfo = "";
+    infoGroup.forEach((key, value) => {groupInfo += "\n$key : $value"});
+    String dropDownValue = volounteersMail[0];
+    Map keyContainer = {};
+    Random random = new Random();
+    if (Platform.isIOS) {
+      await showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) => StatefulBuilder(
+          builder: (context, setState) => CupertinoAlertDialog(
+            title: Text(
+              "Accettazione Prenotazione",
+              style: TextStyle(
+                fontSize: 28,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Text("Assegna i volontari per questa visita"),
+                    DropdownButton<String>(
+                      isExpanded: true,
+                      isDense: true,
+                      value: dropDownValue,
+                      icon: Icon(Icons.arrow_downward),
+                      iconSize: 40,
+                      elevation: 20,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 23,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropDownValue = newValue;
+                        });
+                      },
+                      items: volounteersMail
+                          .map((mail) => new DropdownMenuItem<String>(
+                                value: mail,
+                                child: Text(volounteersData[mail]),
+                              ))
+                          .toList(),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        size: 40,
+                        color: Color.fromARGB(255, 102, 37, 45),
+                      ),
+                      onPressed: () {
+                        Key key = Key(random.nextInt(1000000000).toString());
+                        keyContainer.addAll({key: dropDownValue});
+                        mailVolounteersChoosen.add(dropDownValue);
+                        containerVolounteers.add(
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      volounteersData[dropDownValue],
+                                      style: infoStyle,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                        size: 40,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          final mailDelete = keyContainer[key];
+                                          mailVolounteersChoosen
+                                              .remove(mailDelete);
+                                          final int indexMailDelete =
+                                              getMapValueIndex(mailDelete,
+                                                  keyContainer, true);
+                                          containerVolounteers
+                                              .removeAt(indexMailDelete);
+                                        });
+                                      }),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 25,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    Column(
+                      children: containerVolounteers,
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () async {
+                  final bool result =
+                      await accetta(email, date, prenotazioneId);
+                  mailVolounteersChoosen.forEach((email) async {
+                    await sendResponse(
+                        groupInfo, email, "Info gruppo per Visita Barbiana");
+                  });
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                  resultOperation = result;
+                },
+                child: Text(
+                  "Conferma",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Text(
+              "Accettazione Prenotazione",
+              style: TextStyle(
+                fontSize: 28,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Text("Assegna i volontari per questa visita"),
+                    DropdownButton<String>(
+                      isExpanded: true,
+                      isDense: true,
+                      value: dropDownValue,
+                      icon: Icon(Icons.arrow_downward),
+                      iconSize: 40,
+                      elevation: 20,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 23,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropDownValue = newValue;
+                        });
+                      },
+                      items: volounteersMail
+                          .map((mail) => new DropdownMenuItem<String>(
+                                value: mail,
+                                child: Text(volounteersData[mail]),
+                              ))
+                          .toList(),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        size: 40,
+                        color: Color.fromARGB(255, 102, 37, 45),
+                      ),
+                      onPressed: () {
+                        Key key = Key(random.nextInt(1000000000).toString());
+                        keyContainer.addAll({key: dropDownValue});
+                        mailVolounteersChoosen.add(dropDownValue);
+                        containerVolounteers.add(
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      volounteersData[dropDownValue],
+                                      style: infoStyle,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                        size: 40,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          final mailDelete = keyContainer[key];
+                                          mailVolounteersChoosen
+                                              .remove(mailDelete);
+                                          final int indexMailDelete =
+                                              getMapValueIndex(mailDelete,
+                                                  keyContainer, true);
+                                          containerVolounteers
+                                              .removeAt(indexMailDelete);
+                                        });
+                                      }),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 25,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    Column(
+                      children: containerVolounteers,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  final bool result =
+                      await accetta(email, date, prenotazioneId);
+                  mailVolounteersChoosen.forEach((email) async {
+                    await sendResponse(
+                        groupInfo, email, "Info gruppo per Visita Barbiana");
+                  });
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                  resultOperation = result;
+                },
+                child: Text(
+                  "Conferma",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -347,7 +629,6 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                     final String email = infoRichiesta["email"];
                     final bool resultRefusing =
                         await refuseOperation(prenotazioneId, email);
-                    //implement result print
                     if (Platform.isIOS) {
                       showCupertinoDialog(
                         context: context,
@@ -366,9 +647,47 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                               fontSize: 28,
                             ),
                           ),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                              },
+                            )
+                          ],
                         ),
                       );
-                    } else {}
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: Text(
+                            "Esito Operazione",
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
+                          ),
+                          content: Text(
+                            resultRefusing
+                                ? "Operazione effetuata con successo !"
+                                : "Ops... Si è verificato un'errore mentre veniva spedita l'email.",
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
+                          ),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     "Rifiuta",
