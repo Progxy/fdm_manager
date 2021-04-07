@@ -253,7 +253,7 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
 
   accetta(String email, String date, String hour, String prenotazioneId) async {
     final String responseText = """Buongiorno,
-va bene per il $date. ore $hour a Barbiana: &quot;Si informa  che i pullman grandi, devono essere
+va bene per il $date. ore $hour a Barbiana: 'Si informa  che i pullman grandi, devono essere
 lasciati a circa Km 3 prima LAGO VIOLA, dove vi è il cartello di divieto di transito. Da lì
 bisogna proseguire a piedi per circa 45 minuti, salendo per il Sentiero della Costituzione. I
 pullman fino a 25/30 posti e le auto, possono arrivare fino al bivio dove è segnalato il
@@ -262,9 +262,7 @@ caso in cui una macchina abbia a bordo una persona anziana o disabile, l’auto 
 fino a Barbiana. Le scolaresche e i gruppi che hanno al loro seguito disabili o
 persone che non possono affrontare la strada a piedi, devono rivolgersi per
 tempo alla PUBBLICA ASSISTENZA DI VICCHIO, 055 8449980 – 392 6992691 Sig.ra
-Giuliana. Risentiamoci qualche giorno prima sia per confermare che per annullare la
-visita. E’ obbligatorio un cellulare di riferimento. In caso di mancata mail la visita si ritiene
-annullata.
+Giuliana. Si prega di utilizzare le piattaforme della Fondazione per annullare la visita.
 Per emergenza COVID19 LA VISITA AGLI AMBIENTI INTERNI (SCUOLA E
 OFFICINA) SARA’ EFFETTUATA IN GRUPPI MAX 10 PERSONE PER I GRUPPI
 SUPERIORI VERRANNO ORGANIZZATE VISITE SCAGLIONATE. MENTRE LA
@@ -280,7 +278,7 @@ GRADIREBBE che i gruppi scolastici, parrocchiali e sociali, che ne condividono 
 aderissero iscrivendosi come soci; in alternativa GRADIREBBE un contributo volontario pari
 alla quota di iscrizione di 50,00 euro per tutto il Gruppo. Per singoli il contributo è di 15
 euro che sale a 30 per gruppi familiari. Questo per aiutare al mantenimento del luogo
-e del Percorso. E&#39; possibile provvedere direttamente sul posto e sarà rilasciata regolare
+e del Percorso. E' possibile provvedere direttamente sul posto e sarà rilasciata regolare
 ricevuta e tessera”.
 Cordiali saluti
 Agostino
@@ -291,7 +289,6 @@ Agostino
         FirebaseDatabase.instance.reference().child("Prenotazione");
     databaseReference.child(prenotazioneId).update({"presaVisione": "si"});
     return resultSend;
-    //aggiungi testo informativo !
   }
 
   getMapValueIndex(value, Map data, bool isValue) {
