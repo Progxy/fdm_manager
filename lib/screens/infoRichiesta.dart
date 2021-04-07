@@ -244,6 +244,17 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                 ),
               ),
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+              },
+              child: Text(
+                "Annulla",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+            ),
           ],
         ),
       );
@@ -301,24 +312,31 @@ Agostino
     int index = 0;
     for (var val in values) {
       if (val == value) {
-        return index;
+        return index >= data.length ? data.length - 1 : index;
       }
       index++;
     }
     return null;
   }
 
+  addAssegnazioneMancante(String prenotazioneId) {
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("AssegnazioniMancanti");
+    databaseReference.set({prenotazioneId: "id"});
+  }
+
   accettaOperation(String prenotazioneId, String email, Map infoGroup,
       String date, String hour) async {
     bool resultOperation;
-    final Map<String, String> volounteersData = await getVolounteersMails();
-    final List<String> volounteersMail = volounteersData.keys.toList();
+    final Map volounteersData = await getVolounteersMails();
+    final List volounteersMail = volounteersData.keys.toList();
     List<Widget> containerVolounteers = [];
     List mailVolounteersChoosen = [];
     String groupInfo = "";
     infoGroup.forEach((key, value) => {
-          groupInfo += "\n$key : $value"
-        }); //non mandare info utili all'elaborazione
+          if (key != "presaVisione" && value != "Altro")
+            {groupInfo += "\n$key : $value"}
+        });
     String dropDownValue = volounteersMail[0];
     Map keyContainer = {};
     Random random = new Random();
@@ -462,7 +480,16 @@ Agostino
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text("Assegna i volontari per questa visita"),
+                    Text(
+                      "Assegna i volontari per questa visita",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
                     DropdownButton<String>(
                       isExpanded: true,
                       isDense: true,
@@ -487,56 +514,72 @@ Agostino
                               ))
                           .toList(),
                     ),
+                    SizedBox(
+                      height: 25,
+                    ),
                     IconButton(
                       icon: Icon(
                         Icons.add,
                         size: 40,
-                        color: Color.fromARGB(255, 102, 37, 45),
+                        color: Color.fromARGB(255, 24, 37, 102),
                       ),
                       onPressed: () {
-                        Key key = Key(random.nextInt(1000000000).toString());
-                        keyContainer.addAll({key: dropDownValue});
-                        mailVolounteersChoosen.add(dropDownValue);
-                        containerVolounteers.add(
-                          Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      volounteersData[dropDownValue],
-                                      style: infoStyle,
-                                    ),
-                                  ),
-                                  IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                        size: 40,
+                        if (keyContainer.containsValue(dropDownValue)) {
+                          return;
+                        }
+                        setState(() {
+                          Key key = Key(random.nextInt(1000000000).toString());
+                          keyContainer.addAll({key: dropDownValue});
+                          mailVolounteersChoosen.add(dropDownValue);
+                          containerVolounteers.add(
+                            Column(
+                              children: [
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        child: Text(
+                                          volounteersData[dropDownValue],
+                                          style: infoStyle,
+                                        ),
                                       ),
-                                      onPressed: () {
-                                        setState(() {
-                                          final mailDelete = keyContainer[key];
-                                          mailVolounteersChoosen
-                                              .remove(mailDelete);
-                                          final int indexMailDelete =
-                                              getMapValueIndex(mailDelete,
-                                                  keyContainer, true);
-                                          containerVolounteers
-                                              .removeAt(indexMailDelete);
-                                        });
-                                      }),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                            ],
-                          ),
-                        );
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Colors.red[800],
+                                            size: 40,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              final mailDelete =
+                                                  keyContainer[key];
+                                              final int indexMailDelete =
+                                                  getMapValueIndex(mailDelete,
+                                                      keyContainer, true);
+                                              mailVolounteersChoosen
+                                                  .remove(mailDelete);
+                                              containerVolounteers
+                                                  .removeAt(indexMailDelete);
+                                              keyContainer.remove(key);
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 25,
+                                ),
+                              ],
+                            ),
+                          );
+                        });
                       },
+                    ),
+                    SizedBox(
+                      height: 25,
                     ),
                     Column(
                       children: containerVolounteers,
@@ -561,6 +604,33 @@ Agostino
                   "Conferma",
                   style: TextStyle(
                     fontSize: 28,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                },
+                child: Text(
+                  "Annulla",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final bool result =
+                      await accetta(email, date, hour, prenotazioneId);
+                  addAssegnazioneMancante(prenotazioneId);
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                  resultOperation = result;
+                },
+                child: Text(
+                  "Conferma Senza Assegnazioni",
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontSize: 26,
                   ),
                 ),
               ),
@@ -646,8 +716,11 @@ Agostino
                   ),
                   onPressed: () async {
                     final String email = infoRichiesta["email"];
-                    final bool resultRefusing = await accettaOperation(
+                    final bool resultAccepting = await accettaOperation(
                         prenotazioneId, email, infoRichiesta, date, hour);
+                    if (resultAccepting == null) {
+                      return;
+                    }
                     if (Platform.isIOS) {
                       showCupertinoDialog(
                         context: context,
@@ -659,7 +732,7 @@ Agostino
                             ),
                           ),
                           content: Text(
-                            resultRefusing
+                            resultAccepting
                                 ? "Operazione effetuata con successo !"
                                 : "Ops... Si è verificato un'errore mentre veniva spedita l'email.",
                             style: TextStyle(
@@ -688,7 +761,7 @@ Agostino
                             ),
                           ),
                           content: Text(
-                            resultRefusing
+                            resultAccepting
                                 ? "Operazione effetuata con successo !"
                                 : "Ops... Si è verificato un'errore mentre veniva spedita l'email.",
                             style: TextStyle(
@@ -728,6 +801,9 @@ Agostino
                     final String email = infoRichiesta["email"];
                     final bool resultRefusing =
                         await refuseOperation(prenotazioneId, email);
+                    if (resultRefusing == null) {
+                      return;
+                    }
                     if (Platform.isIOS) {
                       showCupertinoDialog(
                         context: context,
