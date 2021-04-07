@@ -8,14 +8,14 @@ import 'feedback.dart';
 import 'utilizzo.dart';
 import 'package:intl/intl.dart';
 
-class InfoRichiesta extends StatefulWidget {
+class AssegnazioneVolontari extends StatefulWidget {
   static const String routeName = "/infoRichiesta";
 
   @override
-  _InfoRichiestaState createState() => _InfoRichiestaState();
+  _AssegnazioneVolontariState createState() => _AssegnazioneVolontariState();
 }
 
-class _InfoRichiestaState extends State<InfoRichiesta> {
+class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
   final List<String> choices = <String>[
     "FeedBack",
     "Aiuto",

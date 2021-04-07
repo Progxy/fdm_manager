@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../accountInfo.dart';
 import '../databaseInfo.dart';
+import 'assegnaVolontari.dart';
 import 'badConnection.dart';
 import 'cambioPassword.dart';
 import 'home.dart';
@@ -113,6 +114,43 @@ class _MainDrawerState extends State<MainDrawer> {
               },
               trailing: FutureBuilder(
                   future: DatabaseInfo().hasNewRequest(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data
+                          ? Icon(
+                              Icons.notification_important,
+                              color: Colors.yellow[600],
+                              size: 35,
+                            )
+                          : Container(
+                              width: 35,
+                              height: 35,
+                            );
+                    } else {
+                      return Container(
+                        width: 35,
+                        height: 35,
+                      );
+                    }
+                  }),
+            ),
+            ListTile(
+              title: Text("Assegnazione Volontari",
+                  style: TextStyle(fontSize: 23)),
+              onTap: () async {
+                var connectivityResult =
+                    await (Connectivity().checkConnectivity());
+                if (connectivityResult == ConnectivityResult.none) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BadConnection()));
+                } else {
+                  Navigator.pushReplacementNamed(
+                      context, AssegnazioneVolontari.routeName);
+                }
+              },
+              trailing: FutureBuilder(
+                  future: DatabaseInfo().needVolounteers(),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {

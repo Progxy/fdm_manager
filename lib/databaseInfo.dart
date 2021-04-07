@@ -50,4 +50,18 @@ class DatabaseInfo {
     }
     return newRequest;
   }
+
+  needVolounteers() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("AssegnazioniMancanti")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result.isNotEmpty;
+  }
 }
