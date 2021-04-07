@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +8,7 @@ import 'package:mailer2/mailer.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'utilizzo.dart';
+import 'package:intl/intl.dart';
 
 class InfoRichiesta extends StatefulWidget {
   static const String routeName = "/infoRichiesta";
@@ -308,17 +308,17 @@ Agostino
     return null;
   }
 
-  accettaOperation(String prenotazioneId, String email, Map infoGroup) async {
+  accettaOperation(String prenotazioneId, String email, Map infoGroup,
+      String date, String hour) async {
     bool resultOperation;
-    final String date = infoGroup["data"];
-    final hour = infoGroup["data"].split(" ");
-    print("data : $date, data split : $hour");
     final Map<String, String> volounteersData = await getVolounteersMails();
     final List<String> volounteersMail = volounteersData.keys.toList();
     List<Widget> containerVolounteers = [];
     List mailVolounteersChoosen = [];
     String groupInfo = "";
-    infoGroup.forEach((key, value) => {groupInfo += "\n$key : $value"});
+    infoGroup.forEach((key, value) => {
+          groupInfo += "\n$key : $value"
+        }); //non mandare info utili all'elaborazione
     String dropDownValue = volounteersMail[0];
     Map keyContainer = {};
     Random random = new Random();
@@ -577,6 +577,15 @@ Agostino
     final List richiesta = ModalRoute.of(context).settings.arguments as List;
     final Map infoRichiesta = richiesta[0];
     final String prenotazioneId = richiesta[1];
+    final fullDateTime = DateTime.tryParse(infoRichiesta["data"]);
+    final String fullDate = fullDateTime == null
+        ? infoRichiesta["data"]
+        : DateFormat('dd/MM/yyyy HH:mm').format(fullDateTime);
+    final String hour = infoRichiesta["data"].contains("T")
+        ? infoRichiesta["data"].split("T")[1]
+        : infoRichiesta["data"].split(" ")[1];
+    final String date = fullDate.split(" ")[0];
+    infoRichiesta["data"] = fullDate;
 
     return Scaffold(
       appBar: AppBar(
@@ -638,7 +647,7 @@ Agostino
                   onPressed: () async {
                     final String email = infoRichiesta["email"];
                     final bool resultRefusing = await accettaOperation(
-                        prenotazioneId, email, infoRichiesta);
+                        prenotazioneId, email, infoRichiesta, date, hour);
                     if (Platform.isIOS) {
                       showCupertinoDialog(
                         context: context,

@@ -3,6 +3,7 @@ import 'package:fdm_manager/screens/richiesteVisita.dart';
 import 'package:flutter/material.dart';
 
 import '../accountInfo.dart';
+import '../databaseInfo.dart';
 import 'badConnection.dart';
 import 'cambioPassword.dart';
 import 'home.dart';
@@ -110,10 +111,32 @@ class _MainDrawerState extends State<MainDrawer> {
                       context, RichiesteVisita.routeName);
                 }
               },
+              trailing: FutureBuilder(
+                  future: DatabaseInfo().hasNewRequest(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data
+                          ? Icon(
+                              Icons.notification_important,
+                              color: Colors.yellow[600],
+                              size: 35,
+                            )
+                          : Container(
+                              width: 35,
+                              height: 35,
+                            );
+                    } else {
+                      return Container(
+                        width: 35,
+                        height: 35,
+                      );
+                    }
+                  }),
             ),
             Padding(
               padding: EdgeInsets.only(
-                top: 225,
+                top: 305,
               ),
               child: Divider(
                 thickness: 1,
