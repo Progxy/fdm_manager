@@ -328,6 +328,7 @@ Agostino
   accettaOperation(String prenotazioneId, String email, Map infoGroup,
       String date, String hour) async {
     bool resultOperation;
+    String errorText = "";
     final Map volounteersData = await getVolounteersMails();
     final List volounteersMail = volounteersData.keys.toList();
     List<Widget> containerVolounteers = [];
@@ -528,6 +529,7 @@ Agostino
                           return;
                         }
                         setState(() {
+                          errorText = "";
                           Key key = Key(random.nextInt(1000000000).toString());
                           keyContainer.addAll({key: dropDownValue});
                           mailVolounteersChoosen.add(dropDownValue);
@@ -584,6 +586,25 @@ Agostino
                     Column(
                       children: containerVolounteers,
                     ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    errorText.isNotEmpty
+                        ? FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              errorText,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.red[900],
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 10,
+                            width: 10,
+                          ),
                   ],
                 ),
               ),
@@ -591,6 +612,12 @@ Agostino
             actions: [
               TextButton(
                 onPressed: () async {
+                  if (mailVolounteersChoosen.isEmpty) {
+                    setState(() {
+                      errorText = "Assegnare i Volontari!";
+                    });
+                    return;
+                  }
                   final bool result =
                       await accetta(email, date, hour, prenotazioneId);
                   mailVolounteersChoosen.forEach((email) async {
