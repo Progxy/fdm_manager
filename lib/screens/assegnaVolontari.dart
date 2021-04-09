@@ -58,10 +58,9 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
   List mailVolounteersChoosen = [];
   Map keyContainer = {};
   Random random = new Random();
+  String errorText = "";
   String idTextInfo = "";
-
-  //ottieni id dei non assegnati e confrontali con gli id totali
-  // per togliere le informazioni non necessarie
+  String errorTextMail = "";
 
   sendResponse(String text, String email, String object) async {
     var options = new GmailSmtpOptions()
@@ -279,6 +278,20 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
             SizedBox(
               height: 25,
             ),
+            Text(
+              errorTextMail,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Colors.red[900],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            errorTextMail.isEmpty
+                ? Container()
+                : SizedBox(
+                    height: 15,
+                  ),
             Column(
               children: containerVolounteers,
             ),
@@ -297,6 +310,7 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                     return;
                   }
                   setState(() {
+                    errorTextMail = "";
                     Key key = Key(random.nextInt(1000000000).toString());
                     keyContainer.addAll({key: volounteerChoosen});
                     mailVolounteersChoosen.add(volounteerChoosen);
@@ -381,6 +395,7 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                   ),
                   onChanged: (String newValue) {
                     setState(() {
+                      errorText = "";
                       idRequestChoosen = newValue;
                       final temp = idInfos[idRequestChoosen];
                       final fullDateTime = DateTime.tryParse(temp["data"]);
@@ -417,6 +432,22 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
               height: 15,
             ),
             Center(
+              child: Text(
+                errorText,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.red[900],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            errorText.isEmpty
+                ? Container()
+                : SizedBox(
+                    height: 25,
+                  ),
+            Center(
               child: TextButton(
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -425,7 +456,20 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                   primary: Color.fromARGB(255, 24, 37, 102),
                 ),
                 onPressed: () async {
+                  bool errors = false;
                   if (idTextInfo.isEmpty) {
+                    setState(() {
+                      errorText = "Scegliere un id !";
+                    });
+                    errors = true;
+                  }
+                  if (mailVolounteersChoosen.isEmpty) {
+                    setState(() {
+                      errorTextMail = "Scegliere almeno un volontario!";
+                    });
+                    errors = true;
+                  }
+                  if (errors) {
                     return;
                   }
                   bool continuE = false;

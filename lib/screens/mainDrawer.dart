@@ -146,8 +146,8 @@ class _MainDrawerState extends State<MainDrawer> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => BadConnection()));
                 } else {
-                  await VolounteerManager().getRichiesteVisita();
                   await VolounteerManager().getVolounteersMails();
+                  await VolounteerManager().getUnassignedRequests();
                   Navigator.pushReplacementNamed(
                       context, AssegnazioneVolontari.routeName);
                 }
