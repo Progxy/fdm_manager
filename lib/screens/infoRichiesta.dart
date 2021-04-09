@@ -268,37 +268,85 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
   }
 
   accetta(String email, String date, String hour, String prenotazioneId) async {
-    final String responseText = """Buongiorno,
-va bene per il $date. ore $hour a Barbiana: 'Si informa  che i pullman grandi, devono essere
-lasciati a circa Km 3 prima LAGO VIOLA, dove vi è il cartello di divieto di transito. Da lì
-bisogna proseguire a piedi per circa 45 minuti, salendo per il Sentiero della Costituzione. I
-pullman fino a 25/30 posti e le auto, possono arrivare fino al bivio dove è segnalato il
-“Sentiero della Costituzione”, da li 1 km a piedi, gli ultimi 800 metri sono molto ripidi, nel
-caso in cui una macchina abbia a bordo una persona anziana o disabile, l’auto può arrivare
-fino a Barbiana. Le scolaresche e i gruppi che hanno al loro seguito disabili o
-persone che non possono affrontare la strada a piedi, devono rivolgersi per
-tempo alla PUBBLICA ASSISTENZA DI VICCHIO, 055 8449980 – 392 6992691 Sig.ra
-Giuliana. Si prega di utilizzare le piattaforme della Fondazione per annullare la visita.
-Per emergenza COVID19 LA VISITA AGLI AMBIENTI INTERNI (SCUOLA E
-OFFICINA) SARA’ EFFETTUATA IN GRUPPI MAX 10 PERSONE PER I GRUPPI
-SUPERIORI VERRANNO ORGANIZZATE VISITE SCAGLIONATE. MENTRE LA
-TESTIMONIANZA VERRA’ EFFETTUATA POSSIBILMENTE ALL’ESTERNO. I
-PARTECIPANTI DOVRANNO INDOSSARE LA MASCHERINA, MANTENERE LE
-DISTANZE DI UN METRO E IGIENIZZARSI LE MANI CON GEL MESSO A
-DISPOSIZIONE DALLA FONDAZIONE STESSA.
-La Fondazione chiede massimo rispetto di Barbiana, luogo di sofferenza ed
-esilio che don Lorenzo ha trasformato in luogo di fede, di pensiero, di scuola e
-di esempio religioso e sociale per ridare dignità ai poveri.
-Per le visite guidate con spiegazione di tutto il Percorso didattico, la Fondazione
-GRADIREBBE che i gruppi scolastici, parrocchiali e sociali, che ne condividono gli scopi,
-aderissero iscrivendosi come soci; in alternativa GRADIREBBE un contributo volontario pari
-alla quota di iscrizione di 50,00 euro per tutto il Gruppo. Per singoli il contributo è di 15
-euro che sale a 30 per gruppi familiari. Questo per aiutare al mantenimento del luogo
-e del Percorso. E' possibile provvedere direttamente sul posto e sarà rilasciata regolare
-ricevuta e tessera”.
-Cordiali saluti
-Agostino
-3355682242""";
+    final String start =
+        "Buongiorno, va bene per il $date. ore $hour a Barbiana: 'Si informa  che i pullman grandi, devono essere ";
+    final String p1 =
+        "lasciati a circa Km 3 prima LAGO VIOLA, dove vi è il cartello di divieto di transito. Da lì ";
+    final String p2 =
+        "bisogna proseguire a piedi per circa 45 minuti, salendo per il Sentiero della Costituzione. I ";
+    final String p3 =
+        "pullman fino a 25/30 posti e le auto, possono arrivare fino al bivio dove è segnalato il ";
+    final String p4 =
+        "“Sentiero della Costituzione”, da li 1 km a piedi, gli ultimi 800 metri sono molto ripidi, nel ";
+    final String p5 =
+        "caso in cui una macchina abbia a bordo una persona anziana o disabile, l’auto può arrivare ";
+    final String p6 =
+        "fino a Barbiana. Le scolaresche e i gruppi che hanno al loro seguito disabili o ";
+    final String p7 =
+        "persone che non possono affrontare la strada a piedi, devono rivolgersi per ";
+    final String p8 =
+        "tempo alla PUBBLICA ASSISTENZA DI VICCHIO, 055 8449980 – 392 6992691 Sig.ra ";
+    final String p9 =
+        "Giuliana. Si prega di utilizzare le piattaforme della Fondazione per annullare la visita. ";
+    final String p10 =
+        "Per emergenza COVID19 LA VISITA AGLI AMBIENTI INTERNI (SCUOLA E ";
+    final String p11 =
+        "OFFICINA) SARA’ EFFETTUATA IN GRUPPI MAX 10 PERSONE PER I GRUPPI ";
+    final String p12 =
+        "SUPERIORI VERRANNO ORGANIZZATE VISITE SCAGLIONATE. MENTRE LA ";
+    final String p13 =
+        "TESTIMONIANZA VERRA’ EFFETTUATA POSSIBILMENTE ALL’ESTERNO. I ";
+    final String p14 =
+        "PARTECIPANTI DOVRANNO INDOSSARE LA MASCHERINA, MANTENERE LE ";
+    final String p15 =
+        "DISTANZE DI UN METRO E IGIENIZZARSI LE MANI CON GEL MESSO A ";
+    final String p16 = "DISPOSIZIONE DALLA FONDAZIONE STESSA. ";
+    final String p17 =
+        "La Fondazione chiede massimo rispetto di Barbiana, luogo di sofferenza ed ";
+    final String p18 =
+        "esilio che don Lorenzo ha trasformato in luogo di fede, di pensiero, di scuola e ";
+    final String p19 =
+        "di esempio religioso e sociale per ridare dignità ai poveri. ";
+    final String p20 =
+        "Per le visite guidate con spiegazione di tutto il Percorso didattico, la Fondazione ";
+    final String p21 =
+        "GRADIREBBE che i gruppi scolastici, parrocchiali e sociali, che ne condividono gli scopi, ";
+    final String p22 =
+        "aderissero iscrivendosi come soci; in alternativa GRADIREBBE un contributo volontario pari ";
+    final String p23 =
+        "alla quota di iscrizione di 50,00 euro per tutto il Gruppo. Per singoli il contributo è di 15 ";
+    final String p24 =
+        "euro che sale a 30 per gruppi familiari. Questo per aiutare al mantenimento del luogo ";
+    final String p25 =
+        "e del Percorso. E' possibile provvedere direttamente sul posto e sarà rilasciata regolare ricevuta e tessera”. ";
+    final String end = "\n\nCordiali saluti\n\nAgostino\n\n3355682242";
+    final String responseText = start +
+        p1 +
+        p2 +
+        p3 +
+        p4 +
+        p5 +
+        p6 +
+        p7 +
+        p8 +
+        p9 +
+        p10 +
+        p11 +
+        p12 +
+        p13 +
+        p14 +
+        p15 +
+        p16 +
+        p17 +
+        p18 +
+        p19 +
+        p20 +
+        p21 +
+        p22 +
+        p23 +
+        p24 +
+        p25 +
+        end;
     final bool resultSend = await sendResponse(
         "Richiesta Visita a Barbiana accettata", email, responseText);
     final databaseReference =
