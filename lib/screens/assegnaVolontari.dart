@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:connectivity/connectivity.dart';
+import 'package:fdm_manager/screens/volounteersManager.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +9,9 @@ import 'package:mailer2/mailer.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'utilizzo.dart';
-import 'package:intl/intl.dart';
 
 class AssegnazioneVolontari extends StatefulWidget {
-  static const String routeName = "/infoRichiesta";
+  static const String routeName = "/assegnaVolontari";
 
   @override
   _AssegnazioneVolontariState createState() => _AssegnazioneVolontariState();
@@ -42,8 +44,17 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
     fontWeight: FontWeight.w300,
     color: Colors.grey,
   );
-  final TextEditingController _motivazioneController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final Map idInfos = VolounteerManager.idRequests;
+  final List idInfo = VolounteerManager.idRequests.keys.toList();
+  final Map infoVolounteers = VolounteerManager.volounteers;
+  final List volounteersMail = VolounteerManager.volounteers.keys.toList();
+  String idRequestChoosen = VolounteerManager.idRequests.keys.toList()[0];
+  String volounteerChoosen = VolounteerManager.volounteers.keys.toList()[0];
+  List<Widget> containerVolounteers = [];
+  List mailVolounteersChoosen = [];
+  Map keyContainer = {};
+  Random random = new Random();
+  String idTextInfo = "";
 
   loadData(Map data) {
     List<Widget> result = [];
@@ -87,20 +98,6 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
     return result;
   }
 
-  getVolounteersMails() async {
-    Map result = {};
-    final database = FirebaseDatabase.instance;
-    await database
-        .reference()
-        .child("Volontari")
-        .orderByValue()
-        .once()
-        .then((DataSnapshot snapshot) {
-      result = new Map.from(snapshot.value);
-    });
-    return result;
-  }
-
   getMapValueIndex(value, Map data, bool isValue) {
     List values = [];
     if (isValue) {
@@ -126,19 +123,6 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
 
   @override
   Widget build(BuildContext context) {
-    final List richiesta = ModalRoute.of(context).settings.arguments as List;
-    final Map infoRichiesta = richiesta[0];
-    final String prenotazioneId = richiesta[1];
-    final fullDateTime = DateTime.tryParse(infoRichiesta["data"]);
-    final String fullDate = fullDateTime == null
-        ? infoRichiesta["data"]
-        : DateFormat('dd/MM/yyyy HH:mm').format(fullDateTime);
-    final String hour = infoRichiesta["data"].contains("T")
-        ? infoRichiesta["data"].split("T")[1]
-        : infoRichiesta["data"].split(" ")[1];
-    final String date = fullDate.split(" ")[0];
-    infoRichiesta["data"] = fullDate;
-
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -180,8 +164,128 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
             SizedBox(
               height: 15,
             ),
+            Text(
+              "Assegna i volontari per la visita scelta : ",
+              style: TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
+            DropdownButton<String>(
+              isExpanded: true,
+              isDense: true,
+              value: volounteerChoosen,
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 40,
+              elevation: 20,
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 23,
+                fontWeight: FontWeight.w600,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  volounteerChoosen = newValue;
+                });
+              },
+              items: volounteersMail
+                  .map((mail) => new DropdownMenuItem<String>(
+                        value: mail,
+                        child: Text(infoVolounteers[mail]),
+                      ))
+                  .toList(),
+            ),
+            Text(
+              "Scegliere la richiesta di visita : ",
+              style: TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
+            DropdownButton<String>(
+              isExpanded: true,
+              isDense: true,
+              value: idRequestChoosen,
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 40,
+              elevation: 20,
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 23,
+                fontWeight: FontWeight.w600,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  idRequestChoosen = newValue;
+                  idTextInfo = idInfos[idRequestChoosen];
+                });
+              },
+              items: idInfo
+                  .map((id) => new DropdownMenuItem<String>(
+                        value: id,
+                        child: Text(id),
+                      ))
+                  .toList(),
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                size: 40,
+                color: Color.fromARGB(255, 102, 37, 45),
+              ),
+              onPressed: () {
+                Key key = Key(random.nextInt(1000000000).toString());
+                keyContainer.addAll({key: volounteerChoosen});
+                mailVolounteersChoosen.add(volounteerChoosen);
+                containerVolounteers.add(
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            child: Text(
+                              infoVolounteers[volounteerChoosen],
+                              style: infoStyle,
+                            ),
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                                size: 40,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  final mailDelete = keyContainer[key];
+                                  mailVolounteersChoosen.remove(mailDelete);
+                                  final int indexMailDelete = getMapValueIndex(
+                                      mailDelete, keyContainer, true);
+                                  containerVolounteers
+                                      .removeAt(indexMailDelete);
+                                });
+                              }),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
             Column(
-              children: loadData(infoRichiesta),
+              children: containerVolounteers,
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Text(
+              idTextInfo,
+              style: infoStyle,
             ),
             SizedBox(
               height: 35,

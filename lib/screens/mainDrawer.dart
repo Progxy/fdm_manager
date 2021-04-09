@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/screens/richiesteVisita.dart';
+import 'package:fdm_manager/screens/volounteersManager.dart';
 import 'package:flutter/material.dart';
 
 import '../accountInfo.dart';
@@ -145,6 +146,8 @@ class _MainDrawerState extends State<MainDrawer> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => BadConnection()));
                 } else {
+                  await VolounteerManager().getRichiesteVisita();
+                  await VolounteerManager().getVolounteersMails();
                   Navigator.pushReplacementNamed(
                       context, AssegnazioneVolontari.routeName);
                 }
