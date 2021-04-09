@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/screens/home.dart';
+import 'package:fdm_manager/screens/mainDrawer.dart';
 import 'package:fdm_manager/screens/volounteersManager.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -225,6 +226,7 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
         backgroundColor: Color.fromARGB(255, 24, 37, 102),
         centerTitle: true,
       ),
+      drawer: MainDrawer(),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

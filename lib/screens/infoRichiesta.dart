@@ -340,7 +340,7 @@ Agostino
     infoGroup.forEach((key, value) => {
           if (key != "presaVisione") {groupInfo += "\n$key : $value"}
         });
-    String dropDownValue = volounteersMail[0];
+    String dropDownValue = volounteersData[volounteersMail[0]];
     Map keyContainer = {};
     Random random = new Random();
     if (Platform.isIOS) {
@@ -508,12 +508,13 @@ Agostino
                       onChanged: (String newValue) {
                         setState(() {
                           dropDownValue = newValue;
+                          print("value : $dropDownValue");
                         });
                       },
                       items: volounteersMail
                           .map((mail) => new DropdownMenuItem<String>(
-                                value: mail,
-                                child: Text(volounteersData[mail]),
+                                value: volounteersData[mail],
+                                child: Text(mail),
                               ))
                           .toList(),
                     ),
@@ -546,7 +547,7 @@ Agostino
                                     children: [
                                       Container(
                                         child: Text(
-                                          volounteersData[dropDownValue],
+                                          dropDownValue,
                                           style: infoStyle,
                                         ),
                                       ),
@@ -622,10 +623,10 @@ Agostino
                   }
                   final bool result =
                       await accetta(email, date, hour, prenotazioneId);
-                  mailVolounteersChoosen.forEach((email) async {
+                  for (String email in mailVolounteersChoosen) {
                     await sendResponse(
                         groupInfo, email, "Info gruppo per Visita Barbiana");
-                  });
+                  }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;
                 },
