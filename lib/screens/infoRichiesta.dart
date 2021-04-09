@@ -768,7 +768,12 @@ Agostino
                           ),
                           actions: [
                             CupertinoDialogAction(
-                              child: Text("OK"),
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.of(context, rootNavigator: true)
                                     .pop('dialog');
@@ -796,8 +801,13 @@ Agostino
                             ),
                           ),
                           actions: [
-                            CupertinoDialogAction(
-                              child: Text("OK"),
+                            TextButton(
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.of(context, rootNavigator: true)
                                     .pop('dialog');
@@ -851,7 +861,12 @@ Agostino
                           ),
                           actions: [
                             CupertinoDialogAction(
-                              child: Text("OK"),
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.of(context, rootNavigator: true)
                                     .pop('dialog');
@@ -879,8 +894,13 @@ Agostino
                             ),
                           ),
                           actions: [
-                            CupertinoDialogAction(
-                              child: Text("OK"),
+                            TextButton(
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.of(context, rootNavigator: true)
                                     .pop('dialog');
