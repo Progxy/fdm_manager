@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:connectivity/connectivity.dart';
+import 'package:fdm_manager/screens/richiesteVisita.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,7 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
     int index = 0;
     for (var key in keys) {
       if (key == "presaVisione") {
+        index++;
         continue;
       }
       final value = values[index];
@@ -360,7 +362,16 @@ Agostino
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text("Assegna i volontari per questa visita"),
+                    Text(
+                      "Assegna i volontari per questa visita",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
                     DropdownButton<String>(
                       isExpanded: true,
                       isDense: true,
@@ -380,65 +391,101 @@ Agostino
                       },
                       items: volounteersMail
                           .map((mail) => new DropdownMenuItem<String>(
-                                value: mail,
-                                child: Text(volounteersData[mail]),
+                                value: volounteersData[mail],
+                                child: Text(mail),
                               ))
                           .toList(),
+                    ),
+                    SizedBox(
+                      height: 25,
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.add,
                         size: 40,
-                        color: Color.fromARGB(255, 102, 37, 45),
+                        color: Color.fromARGB(255, 24, 37, 102),
                       ),
                       onPressed: () {
-                        Key key = Key(random.nextInt(1000000000).toString());
-                        keyContainer.addAll({key: dropDownValue});
-                        mailVolounteersChoosen.add(dropDownValue);
-                        containerVolounteers.add(
-                          Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      volounteersData[dropDownValue],
-                                      style: infoStyle,
-                                    ),
-                                  ),
-                                  IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                        size: 40,
+                        if (keyContainer.containsValue(dropDownValue)) {
+                          return;
+                        }
+                        setState(() {
+                          errorText = "";
+                          Key key = Key(random.nextInt(1000000000).toString());
+                          keyContainer.addAll({key: dropDownValue});
+                          mailVolounteersChoosen.add(dropDownValue);
+                          containerVolounteers.add(
+                            Column(
+                              children: [
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        child: Text(
+                                          dropDownValue,
+                                          style: infoStyle,
+                                        ),
                                       ),
-                                      onPressed: () {
-                                        setState(() {
-                                          final mailDelete = keyContainer[key];
-                                          mailVolounteersChoosen
-                                              .remove(mailDelete);
-                                          final int indexMailDelete =
-                                              getMapValueIndex(mailDelete,
-                                                  keyContainer, true);
-                                          containerVolounteers
-                                              .removeAt(indexMailDelete);
-                                        });
-                                      }),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                            ],
-                          ),
-                        );
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Colors.red[800],
+                                            size: 40,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              final mailDelete =
+                                                  keyContainer[key];
+                                              final int indexMailDelete =
+                                                  getMapValueIndex(mailDelete,
+                                                      keyContainer, true);
+                                              mailVolounteersChoosen
+                                                  .remove(mailDelete);
+                                              containerVolounteers
+                                                  .removeAt(indexMailDelete);
+                                              keyContainer.remove(key);
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 25,
+                                ),
+                              ],
+                            ),
+                          );
+                        });
                       },
+                    ),
+                    SizedBox(
+                      height: 25,
                     ),
                     Column(
                       children: containerVolounteers,
                     ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    errorText.isNotEmpty
+                        ? FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              errorText,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.red[900],
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 10,
+                            width: 10,
+                          ),
                   ],
                 ),
               ),
@@ -446,12 +493,18 @@ Agostino
             actions: [
               CupertinoDialogAction(
                 onPressed: () async {
+                  if (mailVolounteersChoosen.isEmpty) {
+                    setState(() {
+                      errorText = "Assegnare i Volontari!";
+                    });
+                    return;
+                  }
                   final bool result =
                       await accetta(email, date, hour, prenotazioneId);
-                  mailVolounteersChoosen.forEach((email) async {
+                  for (String email in mailVolounteersChoosen) {
                     await sendResponse(
                         groupInfo, email, "Info gruppo per Visita Barbiana");
-                  });
+                  }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;
                 },
@@ -459,6 +512,33 @@ Agostino
                   "Conferma",
                   style: TextStyle(
                     fontSize: 28,
+                  ),
+                ),
+              ),
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                },
+                child: Text(
+                  "Annulla",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+              ),
+              CupertinoDialogAction(
+                onPressed: () async {
+                  final bool result =
+                      await accetta(email, date, hour, prenotazioneId);
+                  addAssegnazioneMancante(prenotazioneId);
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                  resultOperation = result;
+                },
+                child: Text(
+                  "Conferma Senza Assegnazioni",
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontSize: 26,
                   ),
                 ),
               ),
@@ -508,7 +588,6 @@ Agostino
                       onChanged: (String newValue) {
                         setState(() {
                           dropDownValue = newValue;
-                          print("value : $dropDownValue");
                         });
                       },
                       items: volounteersMail
@@ -752,7 +831,7 @@ Agostino
                       return;
                     }
                     if (Platform.isIOS) {
-                      showCupertinoDialog(
+                      await showCupertinoDialog(
                         context: context,
                         builder: (BuildContext context) => CupertinoAlertDialog(
                           title: Text(
@@ -786,7 +865,7 @@ Agostino
                         ),
                       );
                     } else {
-                      showDialog(
+                      await showDialog(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
                           title: Text(
@@ -820,6 +899,7 @@ Agostino
                         ),
                       );
                     }
+                    MaterialPageRoute(builder: (context) => RichiesteVisita());
                   },
                   child: Text(
                     "Accetta",
@@ -845,7 +925,7 @@ Agostino
                       return;
                     }
                     if (Platform.isIOS) {
-                      showCupertinoDialog(
+                      await showCupertinoDialog(
                         context: context,
                         builder: (BuildContext context) => CupertinoAlertDialog(
                           title: Text(
@@ -879,7 +959,7 @@ Agostino
                         ),
                       );
                     } else {
-                      showDialog(
+                      await showDialog(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
                           title: Text(
@@ -913,6 +993,7 @@ Agostino
                         ),
                       );
                     }
+                    MaterialPageRoute(builder: (context) => RichiesteVisita());
                   },
                   child: Text(
                     "Rifiuta",
