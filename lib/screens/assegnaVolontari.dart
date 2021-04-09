@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:fdm_manager/screens/home.dart';
 import 'package:fdm_manager/screens/volounteersManager.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,7 +52,7 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
   final Map infoVolounteers = VolounteerManager.volounteers;
   final List volounteersMail = VolounteerManager.volounteers.keys.toList();
   String idRequestChoosen = VolounteerManager.idRequests.keys.toList()[0];
-  String volounteerChoosen = VolounteerManager.volounteers.keys.toList()[0];
+  String volounteerChoosen = VolounteerManager.volounteers.values.toList()[0];
   List<Widget> containerVolounteers = [];
   List mailVolounteersChoosen = [];
   Map keyContainer = {};
@@ -60,28 +61,6 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
 
   //ottieni id dei non assegnati e confrontali con gli id totali
   // per togliere le informazioni non necessarie
-
-  loadData(Map data) {
-    List<Widget> result = [];
-    final List keys = data.keys.toList();
-    final List values = data.values.toList();
-    int index = 0;
-    for (var key in keys) {
-      final value = values[index];
-      result.add(Padding(
-        padding: const EdgeInsets.only(top: 15.0),
-        child: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: Text(
-            "$key : $value",
-            style: infoStyle,
-          ),
-        ),
-      ));
-      index++;
-    }
-    return result;
-  }
 
   sendResponse(String text, String email, String object) async {
     var options = new GmailSmtpOptions()
@@ -126,10 +105,87 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
     databaseReference.set({prenotazioneId: "id"});
   }
 
-  assignVolounteers(List volounteers, String infoGroups) async {
-    //manda email ai volontari verificandone il risultato
-    //rimuovi dai assegnimancanti
-    return true;
+  assignVolounteers(List volounteers, String infoGroups, String id) async {
+    bool resultOperation;
+    List results = [];
+    for (String email in volounteers) {
+      results.add(await sendResponse(
+          infoGroups, email, "Info Gruppo in Visita a Barbiana"));
+    }
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("AssegnazioniMancanti");
+    databaseReference.child(id).remove();
+    if (results.contains(false) || results.isEmpty) {
+      resultOperation = false;
+    } else {
+      resultOperation = true;
+    }
+    return resultOperation;
+  }
+
+  ///Get the position of the first start digit and the first end digit
+  List getExpressionLimit(String start, String end, String value) {
+    List limits = [];
+    final List searchElement = value.split("");
+    final int stringStartLength = start.length;
+    final int stringEndLength = end.length;
+    String compare = "";
+    bool startComparingStart = false;
+    bool startComparingEnd = false;
+    int ind = 0;
+    bool findEnd = false;
+    for (int index = 0; index <= searchElement.length - 1; index++) {
+      compare = "";
+      var element = searchElement[index];
+      ind = index;
+      if (findEnd) {
+        if (element == end[0]) {
+          startComparingEnd = true;
+        }
+        if (startComparingEnd) {
+          if (stringEndLength == 1) {
+            compare = element;
+          } else {
+            for (int l = 0; l <= stringEndLength - 1; l++) {
+              compare += searchElement[ind];
+              ind++;
+            }
+          }
+          if (end == compare) {
+            final int temp = index;
+            limits.add(temp);
+            break;
+          } else {
+            startComparingEnd = false;
+          }
+        }
+        continue;
+      }
+      if (element == start[0]) {
+        startComparingStart = true;
+      }
+      if (startComparingStart) {
+        if (stringStartLength == 1) {
+          compare = element;
+        } else {
+          for (int i = 0; i <= stringStartLength - 1; i++) {
+            compare += searchElement[ind];
+            ind++;
+          }
+        }
+        if (start == compare) {
+          final int temp = index;
+          limits.add(temp);
+          findEnd = true;
+        } else {
+          startComparingStart = false;
+        }
+      }
+    }
+    if (limits.length != 2) {
+      limits.clear();
+    }
+    return limits;
   }
 
   @override
@@ -211,8 +267,8 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                   },
                   items: volounteersMail
                       .map((mail) => new DropdownMenuItem<String>(
-                            value: mail,
-                            child: Text(infoVolounteers[mail]),
+                            value: infoVolounteers[mail],
+                            child: Text(mail),
                           ))
                       .toList(),
                 ),
@@ -220,6 +276,79 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
             ),
             SizedBox(
               height: 25,
+            ),
+            Column(
+              children: containerVolounteers,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Center(
+              child: IconButton(
+                icon: Icon(
+                  Icons.add,
+                  size: 40,
+                  color: Color.fromARGB(255, 24, 37, 102),
+                ),
+                onPressed: () {
+                  if (keyContainer.containsValue(volounteerChoosen)) {
+                    return;
+                  }
+                  setState(() {
+                    Key key = Key(random.nextInt(1000000000).toString());
+                    keyContainer.addAll({key: volounteerChoosen});
+                    mailVolounteersChoosen.add(volounteerChoosen);
+                    containerVolounteers.add(
+                      Center(
+                        child: Column(
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      volounteerChoosen,
+                                      style: infoStyle,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.red[800],
+                                        size: 40,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          final mailDelete = keyContainer[key];
+                                          final int indexMailDelete =
+                                              getMapValueIndex(mailDelete,
+                                                  keyContainer, true);
+                                          mailVolounteersChoosen
+                                              .remove(mailDelete);
+                                          containerVolounteers
+                                              .removeAt(indexMailDelete);
+                                          keyContainer.remove(key);
+                                        });
+                                      }),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 25,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              height: 35,
             ),
             Text(
               "Scegliere la richiesta di visita : ",
@@ -259,7 +388,9 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                       temp["data"] = fullDate;
                       idTextInfo = "";
                       temp.forEach((key, value) {
-                        idTextInfo += "$key : $value\n\n";
+                        if (key != "presaVisione") {
+                          idTextInfo += "$key : $value\n\n";
+                        }
                       });
                     });
                   },
@@ -271,79 +402,6 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                       .toList(),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Center(
-              child: IconButton(
-                icon: Icon(
-                  Icons.add,
-                  size: 40,
-                  color: Color.fromARGB(255, 24, 37, 102),
-                ),
-                onPressed: () {
-                  if (keyContainer.containsValue(volounteerChoosen)) {
-                    return;
-                  }
-                  setState(() {
-                    Key key = Key(random.nextInt(1000000000).toString());
-                    keyContainer.addAll({key: volounteerChoosen});
-                    mailVolounteersChoosen.add(volounteerChoosen);
-                    containerVolounteers.add(
-                      Center(
-                        child: Column(
-                          children: [
-                            FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      infoVolounteers[volounteerChoosen],
-                                      style: infoStyle,
-                                    ),
-                                  ),
-                                  IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color: Colors.red[800],
-                                        size: 40,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          final mailDelete = keyContainer[key];
-                                          final int indexMailDelete =
-                                              getMapValueIndex(mailDelete,
-                                                  keyContainer, true);
-                                          mailVolounteersChoosen
-                                              .remove(mailDelete);
-                                          containerVolounteers
-                                              .removeAt(indexMailDelete);
-                                          keyContainer.remove(key);
-                                        });
-                                      }),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 25,
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Column(
-              children: containerVolounteers,
             ),
             SizedBox(
               height: 25,
@@ -365,6 +423,9 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                   primary: Color.fromARGB(255, 24, 37, 102),
                 ),
                 onPressed: () async {
+                  if (idTextInfo.isEmpty) {
+                    return;
+                  }
                   bool continuE = false;
                   if (Platform.isIOS) {
                     await showCupertinoDialog(
@@ -463,7 +524,7 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                     return;
                   }
                   final bool result = await assignVolounteers(
-                      mailVolounteersChoosen, idTextInfo);
+                      mailVolounteersChoosen, idTextInfo, idRequestChoosen);
                   if (Platform.isIOS) {
                     showCupertinoDialog(
                       context: context,
@@ -533,6 +594,7 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                       ),
                     );
                   }
+                  MaterialPageRoute(builder: (context) => Home());
                 },
                 child: Text(
                   "Accetta",

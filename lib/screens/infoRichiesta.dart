@@ -53,6 +53,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
     final List values = data.values.toList();
     int index = 0;
     for (var key in keys) {
+      if (key == "presaVisione") {
+        continue;
+      }
       final value = values[index];
       result.add(Padding(
         padding: const EdgeInsets.only(top: 15.0),
@@ -335,8 +338,7 @@ Agostino
     List mailVolounteersChoosen = [];
     String groupInfo = "";
     infoGroup.forEach((key, value) => {
-          if (key != "presaVisione" && value != "Altro")
-            {groupInfo += "\n$key : $value"}
+          if (key != "presaVisione") {groupInfo += "\n$key : $value"}
         });
     String dropDownValue = volounteersMail[0];
     Map keyContainer = {};
