@@ -112,8 +112,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
     final databaseReference =
         FirebaseDatabase.instance.reference().child("Prenotazione");
     final String rifiuto =
-        "Siamo spiacenti ma la vostra richiesta di visita è stata rifiutata poichè " +
-            motivazione;
+        "Siamo spiacenti ma la vostra richiesta di visita è stata rifiutata perchè : \n\n" +
+            motivazione +
+            "\n\nCordiali saluti\n\nAgostino Burberi.";
     final bool resultSend = await sendResponse(
         rifiuto, email, "Rifiuto Richiesta Visita a Barbiana");
     databaseReference.child(prenotazioneId).remove();
@@ -138,6 +139,13 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
               key: _formKey,
               child: Column(
                 children: [
+                  Text(
+                    "Nella motivazione non inserire un saluto finale, essendo già inserito!",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   TextFormField(
                     controller: _motivazioneController,
                     maxLines: 20,
@@ -203,6 +211,13 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
               key: _formKey,
               child: Column(
                 children: [
+                  Text(
+                    "Nella motivazione non inserire un saluto finale, essendo già inserito!",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   TextFormField(
                     controller: _motivazioneController,
                     maxLines: 20,
