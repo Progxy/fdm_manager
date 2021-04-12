@@ -117,7 +117,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
             "\n\nCordiali saluti\n\nAgostino Burberi.";
     final bool resultSend = await sendResponse(
         rifiuto, email, "Rifiuto Richiesta Visita a Barbiana");
-    databaseReference.child(prenotazioneId).remove();
+    if (resultSend) {
+      databaseReference.child(prenotazioneId).remove();
+    }
     return resultSend;
   }
 
@@ -370,7 +372,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
         "Richiesta Visita a Barbiana accettata", email, responseText);
     final databaseReference =
         FirebaseDatabase.instance.reference().child("Prenotazione");
-    databaseReference.child(prenotazioneId).update({"presaVisione": "si"});
+    if (resultSend) {
+      databaseReference.child(prenotazioneId).update({"presaVisione": "si"});
+    }
     return resultSend;
   }
 
@@ -568,9 +572,11 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                   }
                   final bool result =
                       await accetta(email, date, hour, prenotazioneId);
-                  for (String email in mailVolounteersChoosen) {
-                    await sendResponse(
-                        groupInfo, email, "Info gruppo per Visita Barbiana");
+                  if (result) {
+                    for (String email in mailVolounteersChoosen) {
+                      await sendResponse(
+                          groupInfo, email, "Info gruppo per Visita Barbiana");
+                    }
                   }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;
@@ -597,7 +603,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                 onPressed: () async {
                   final bool result =
                       await accetta(email, date, hour, prenotazioneId);
-                  addAssegnazioneMancante(prenotazioneId);
+                  if (result) {
+                    addAssegnazioneMancante(prenotazioneId);
+                  }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;
                 },
@@ -769,9 +777,11 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                   }
                   final bool result =
                       await accetta(email, date, hour, prenotazioneId);
-                  for (String email in mailVolounteersChoosen) {
-                    await sendResponse(
-                        groupInfo, email, "Info gruppo per Visita Barbiana");
+                  if (result) {
+                    for (String email in mailVolounteersChoosen) {
+                      await sendResponse(
+                          groupInfo, email, "Info gruppo per Visita Barbiana");
+                    }
                   }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;
@@ -798,7 +808,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                 onPressed: () async {
                   final bool result =
                       await accetta(email, date, hour, prenotazioneId);
-                  addAssegnazioneMancante(prenotazioneId);
+                  if (result) {
+                    addAssegnazioneMancante(prenotazioneId);
+                  }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;
                 },
