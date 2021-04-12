@@ -178,12 +178,14 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
           actions: [
             CupertinoDialogAction(
               onPressed: () async {
-                final String motivazione = _motivazioneController.text.trim();
-                final bool result =
-                    await rifiuto(motivazione, email, prenotazioneId);
-                _motivazioneController.clear();
-                Navigator.of(context, rootNavigator: true).pop('dialog');
-                resultOperation = result;
+                if (_formKey.currentState.validate()) {
+                  final String motivazione = _motivazioneController.text.trim();
+                  final bool result =
+                      await rifiuto(motivazione, email, prenotazioneId);
+                  _motivazioneController.clear();
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                  resultOperation = result;
+                }
               },
               child: Text(
                 "Conferma",
@@ -250,12 +252,14 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
           actions: [
             TextButton(
               onPressed: () async {
-                final String motivazione = _motivazioneController.text.trim();
-                final bool result =
-                    await rifiuto(motivazione, email, prenotazioneId);
-                _motivazioneController.clear();
-                Navigator.of(context, rootNavigator: true).pop('dialog');
-                resultOperation = result;
+                if (_formKey.currentState.validate()) {
+                  final String motivazione = _motivazioneController.text.trim();
+                  final bool result =
+                      await rifiuto(motivazione, email, prenotazioneId);
+                  _motivazioneController.clear();
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                  resultOperation = result;
+                }
               },
               child: Text(
                 "Conferma",

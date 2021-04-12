@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:fdm_manager/screens/disdette.dart';
 import 'package:fdm_manager/screens/richiesteVisita.dart';
 import 'package:fdm_manager/screens/volounteersManager.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +116,42 @@ class _MainDrawerState extends State<MainDrawer> {
               },
               trailing: FutureBuilder(
                   future: DatabaseInfo().hasNewRequest(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data
+                          ? Icon(
+                              Icons.notification_important,
+                              color: Colors.yellow[600],
+                              size: 35,
+                            )
+                          : Container(
+                              width: 35,
+                              height: 35,
+                            );
+                    } else {
+                      return Container(
+                        width: 35,
+                        height: 35,
+                      );
+                    }
+                  }),
+            ),
+            ListTile(
+              title: Text("Disdette", style: TextStyle(fontSize: 23)),
+              onTap: () async {
+                var connectivityResult =
+                    await (Connectivity().checkConnectivity());
+                if (connectivityResult == ConnectivityResult.none) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BadConnection()));
+                } else {
+                  await VolounteerManager().getDisdette();
+                  Navigator.pushReplacementNamed(context, Disdette.routeName);
+                }
+              },
+              trailing: FutureBuilder(
+                  future: DatabaseInfo().hasNewDisdetta(),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {

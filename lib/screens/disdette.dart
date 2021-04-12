@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/screens/home.dart';
 import 'package:fdm_manager/screens/mainDrawer.dart';
 import 'package:fdm_manager/screens/volounteersManager.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer2/mailer.dart';
@@ -47,11 +48,11 @@ class _DisdetteState extends State<Disdette> {
   );
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _textController = TextEditingController();
-  final Map idInfos = VolounteerManager.idRequests;
-  final List idInfo = VolounteerManager.idRequests.keys.toList();
-  String idRequestChoosen = VolounteerManager.idRequests.keys.toList()[0];
+  final Map idInfos = VolounteerManager.idDisdette;
+  final List idInfo = VolounteerManager.idDisdette.keys.toList();
+  String idRequestChoosen = VolounteerManager.idDisdette.keys.toList()[0];
   String email = VolounteerManager
-      .idRequests[VolounteerManager.idRequests.keys.toList()[0]]["email"];
+      .idDisdette[VolounteerManager.idDisdette.keys.toList()[0]]["email"];
   String errorText = "";
   String idTextInfo = "";
   String errorTextMail = "";
@@ -94,7 +95,12 @@ class _DisdetteState extends State<Disdette> {
     return null;
   }
 
-  disdici() async {}
+  disdici(String disdettaId) async {
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("Disdette");
+    databaseReference.child(disdettaId).remove();
+    return;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -270,6 +276,8 @@ class _DisdetteState extends State<Disdette> {
                       errorText = "Scegliere un id !";
                     });
                     return;
+                  } else if (!_formKey.currentState.validate()) {
+                    return;
                   }
                   final String text = _textController.text.trim();
                   bool continuE = false;
@@ -371,6 +379,9 @@ class _DisdetteState extends State<Disdette> {
                   }
                   final bool result = await sendResponse(
                       text, email, "Disdetta Visita a Barbiana");
+                  if (result) {
+                    disdici(idRequestChoosen);
+                  }
                   if (Platform.isIOS) {
                     showCupertinoDialog(
                       context: context,
