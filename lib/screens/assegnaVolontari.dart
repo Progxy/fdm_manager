@@ -102,7 +102,7 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
   removeAssegnazioneMancante(String prenotazioneId) {
     final databaseReference =
         FirebaseDatabase.instance.reference().child("AssegnazioniMancanti");
-    databaseReference.set({prenotazioneId: "id"});
+    databaseReference.child(prenotazioneId).remove();
   }
 
   assignVolounteers(List volounteers, String infoGroups, String id) async {

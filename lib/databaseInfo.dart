@@ -26,6 +26,13 @@ class DatabaseInfo {
         .then((DataSnapshot snapshot) {
       result = new Map.from(snapshot.value);
     });
+    final List keys = result.keys.toList();
+    for (var key in keys) {
+      bool newRequest = result[key]["presaVisione"] == "no";
+      if (!newRequest) {
+        result.remove(key);
+      }
+    }
     return result;
   }
 
