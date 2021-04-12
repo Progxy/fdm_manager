@@ -141,7 +141,6 @@ class _DisdetteState extends State<Disdette> {
   @override
   Widget build(BuildContext context) {
     final double width = ((MediaQuery.of(context).size.width) / 3) * 2;
-    print("email attuale : $email");
 
     return Scaffold(
       appBar: AppBar(
@@ -215,7 +214,14 @@ class _DisdetteState extends State<Disdette> {
                   onChanged: (String newValue) {
                     setState(() {
                       errorText = "";
+                      idTextInfo = "";
                       idRequestChoosen = newValue;
+                      final temp = idInfos[idRequestChoosen];
+                      temp.forEach((key, value) {
+                        if (key != "presaVisione") {
+                          idTextInfo += "$key : $value\n\n";
+                        }
+                      });
                       email = idInfos[idRequestChoosen]["email"];
                     });
                   },
@@ -231,10 +237,12 @@ class _DisdetteState extends State<Disdette> {
             SizedBox(
               height: 25,
             ),
-            Text(
-              idTextInfo,
-              style: infoStyle,
-              textAlign: TextAlign.center,
+            Center(
+              child: Text(
+                idTextInfo,
+                style: infoStyle,
+                textAlign: TextAlign.center,
+              ),
             ),
             SizedBox(
               height: 15,
@@ -266,31 +274,38 @@ class _DisdetteState extends State<Disdette> {
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  TextFormField(
-                    controller: _textController,
-                    maxLines: 20,
-                    decoration: const InputDecoration(
-                      hintText: "Inserire un messaggio",
-                      hintStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                  SizedBox(
+                    height: 25,
+                  ),
+                  SizedBox(
+                    width: width * 1.35,
+                    child: TextFormField(
+                      controller: _textController,
+                      maxLines: 20,
+                      decoration: const InputDecoration(
+                        hintText: "Inserire un messaggio",
+                        hintStyle: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        border: OutlineInputBorder(),
+                        labelText: "Messaggio",
+                        labelStyle: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
-                      border: OutlineInputBorder(),
-                      labelText: "Messaggio",
-                      labelStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Dati Mancanti";
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Dati Mancanti";
-                      }
-                      return null;
-                    },
                   ),
                 ],
               ),
