@@ -416,6 +416,10 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
     String dropDownValue = volounteersData[volounteersMail[0]];
     Map keyContainer = {};
     Random random = new Random();
+    final databasePrenotazioneReference = FirebaseDatabase.instance
+        .reference()
+        .child("Prenotazione")
+        .child(prenotazioneId);
     if (Platform.isIOS) {
       await showCupertinoDialog(
         context: context,
@@ -577,6 +581,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                       await sendResponse(
                           groupInfo, email, "Info gruppo per Visita Barbiana");
                     }
+                    databasePrenotazioneReference.set({
+                      "volontariAssegnati": mailVolounteersChoosen.toString()
+                    });
                   }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;
@@ -782,6 +789,9 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                       await sendResponse(
                           groupInfo, email, "Info gruppo per Visita Barbiana");
                     }
+                    databasePrenotazioneReference.set({
+                      "volontariAssegnati": mailVolounteersChoosen.toString()
+                    });
                   }
                   Navigator.of(context, rootNavigator: true).pop('dialog');
                   resultOperation = result;

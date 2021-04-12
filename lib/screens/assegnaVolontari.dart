@@ -99,12 +99,6 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
     return null;
   }
 
-  removeAssegnazioneMancante(String prenotazioneId) {
-    final databaseReference =
-        FirebaseDatabase.instance.reference().child("AssegnazioniMancanti");
-    databaseReference.child(prenotazioneId).remove();
-  }
-
   assignVolounteers(List volounteers, String infoGroups, String id) async {
     bool resultOperation;
     List results = [];
@@ -114,11 +108,17 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
     }
     final databaseReference =
         FirebaseDatabase.instance.reference().child("AssegnazioniMancanti");
-    databaseReference.child(id).remove();
+    final databasePrenotazioneReference =
+        FirebaseDatabase.instance.reference().child("Prenotazione").child(id);
     if (results.contains(false) || results.isEmpty) {
       resultOperation = false;
     } else {
       resultOperation = true;
+    }
+    if (resultOperation) {
+      databaseReference.child(id).remove();
+      databasePrenotazioneReference
+          .set({"volontariAssegnati": volounteers.toString()});
     }
     return resultOperation;
   }

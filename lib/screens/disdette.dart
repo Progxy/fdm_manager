@@ -11,6 +11,7 @@ import 'package:mailer2/mailer.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'utilizzo.dart';
+import 'package:intl/intl.dart';
 
 class Disdette extends StatefulWidget {
   static const String routeName = "/disdette";
@@ -100,6 +101,41 @@ class _DisdetteState extends State<Disdette> {
         FirebaseDatabase.instance.reference().child("Disdette");
     databaseReference.child(disdettaId).remove();
     return;
+  }
+
+  getVolontari(String disdettaId) async {
+    final database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Prenotazione")
+        .child(disdettaId)
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    final String res = result["volontariAssegnati"];
+    return res;
+  }
+
+  getDate(String disdettaId) async {
+    final database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Prenotazione")
+        .child(disdettaId)
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    final fullDateTime = DateTime.tryParse(result["data"]);
+    final String fullDate = fullDateTime == null
+        ? result["data"]
+        : DateFormat('dd/MM/yyyy HH:mm').format(fullDateTime);
+    return fullDate;
   }
 
   @override
@@ -381,6 +417,26 @@ class _DisdetteState extends State<Disdette> {
                       text, email, "Disdetta Visita a Barbiana");
                   if (result) {
                     disdici(idRequestChoosen);
+                    final String emailVolontari =
+                        await getVolontari(idRequestChoosen);
+                    if (emailVolontari != null && emailVolontari.isNotEmpty) {
+                      List volontari = emailVolontari
+                          .replaceAll("[", "")
+                          .replaceAll("]", "")
+                          .split(",");
+                      for (int index = 0; index < volontari.length; index++) {
+                        volontari[index] = volontari[index].trim();
+                      }
+                      final String nomeGruppo =
+                          idInfos[idRequestChoosen]["nomeGruppo"];
+                      final String date = await getDate(idRequestChoosen);
+                      final String textDisdetta =
+                          "La visita del gruppo $nomeGruppo del $date è stata disdetta.\n\nCordiali Saluti\n\nAgostino Burberi.";
+                      for (String email in volontari) {
+                        await sendResponse(
+                            textDisdetta, email, "Disdetta Gruppo");
+                      }
+                    }
                   }
                   if (Platform.isIOS) {
                     showCupertinoDialog(
