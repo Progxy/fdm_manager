@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer2/mailer.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'utilizzo.dart';
@@ -569,8 +570,12 @@ class _AssegnazioneVolontariState extends State<AssegnazioneVolontari> {
                   if (!continuE) {
                     return;
                   }
+                  ProgressDialog dialog = new ProgressDialog(context);
+                  dialog.style(message: 'Caricamento...');
+                  await dialog.show();
                   final bool result = await assignVolounteers(
                       mailVolounteersChoosen, idTextInfo, idRequestChoosen);
+                  await dialog.hide();
                   if (Platform.isIOS) {
                     showCupertinoDialog(
                       context: context,

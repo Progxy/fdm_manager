@@ -6,6 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer2/mailer.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'utilizzo.dart';
@@ -913,12 +914,16 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                     primary: Color.fromARGB(255, 24, 37, 102),
                   ),
                   onPressed: () async {
+                    ProgressDialog dialog = new ProgressDialog(context);
+                    dialog.style(message: 'Caricamento...');
+                    await dialog.show();
                     final String email = infoRichiesta["email"];
                     final bool resultAccepting = await accettaOperation(
                         prenotazioneId, email, infoRichiesta, date, hour);
                     if (resultAccepting == null) {
                       return;
                     }
+                    await dialog.hide();
                     if (Platform.isIOS) {
                       await showCupertinoDialog(
                         context: context,
@@ -1007,12 +1012,16 @@ class _InfoRichiestaState extends State<InfoRichiesta> {
                     primary: Color.fromARGB(255, 24, 37, 102),
                   ),
                   onPressed: () async {
+                    ProgressDialog dialog = new ProgressDialog(context);
+                    dialog.style(message: 'Caricamento...');
+                    await dialog.show();
                     final String email = infoRichiesta["email"];
                     final bool resultRefusing =
                         await refuseOperation(prenotazioneId, email);
                     if (resultRefusing == null) {
                       return;
                     }
+                    await dialog.hide();
                     if (Platform.isIOS) {
                       await showCupertinoDialog(
                         context: context,
