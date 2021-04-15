@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer2/mailer.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'utilizzo.dart';
@@ -100,6 +101,13 @@ class _DisdetteState extends State<Disdette> {
     final databaseReference =
         FirebaseDatabase.instance.reference().child("Disdette");
     databaseReference.child(disdettaId).remove();
+    return;
+  }
+
+  presaVisione(String disdettaId) async {
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("Disdette");
+    databaseReference.child(disdettaId).update({"presaVisione": "si"});
     return;
   }
 
@@ -428,10 +436,17 @@ class _DisdetteState extends State<Disdette> {
                   if (!continuE) {
                     return;
                   }
+                  ProgressDialog dialog = new ProgressDialog(context);
+                  dialog.style(message: 'Caricamento...');
+                  await dialog.show();
                   final bool result = await sendResponse(
                       text, email, "Disdetta Visita a Barbiana");
                   if (result) {
-                    disdici(idRequestChoosen);
+                    if (idInfo.length > 1) {
+                      disdici(idRequestChoosen);
+                    } else {
+                      presaVisione(idRequestChoosen);
+                    }
                     final String emailVolontari =
                         await getVolontari(idRequestChoosen);
                     if (emailVolontari != null && emailVolontari.isNotEmpty) {
@@ -453,6 +468,7 @@ class _DisdetteState extends State<Disdette> {
                       }
                     }
                   }
+                  await dialog.hide();
                   if (Platform.isIOS) {
                     showCupertinoDialog(
                       context: context,
