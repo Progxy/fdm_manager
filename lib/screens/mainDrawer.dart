@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 import '../accountInfo.dart';
 import '../databaseInfo.dart';
+import 'addAdmin.dart';
+import 'addVolontario.dart';
 import 'assegnaVolontari.dart';
 import 'badConnection.dart';
 import 'cambioPassword.dart';
@@ -211,6 +213,38 @@ class _MainDrawerState extends State<MainDrawer> {
                       );
                     }
                   }),
+            ),
+            ListTile(
+              title:
+                  Text("Aggiungi Volontario", style: TextStyle(fontSize: 23)),
+              onTap: () async {
+                var connectivityResult =
+                    await (Connectivity().checkConnectivity());
+                if (connectivityResult == ConnectivityResult.none) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BadConnection()));
+                } else {
+                  await VolounteerManager().getVolounteersMails();
+                  await VolounteerManager().getUnassignedRequests();
+                  Navigator.pushReplacementNamed(
+                      context, AddVolontario.routeName);
+                }
+              },
+            ),
+            ListTile(
+              title: Text("Aggiungi Creator", style: TextStyle(fontSize: 23)),
+              onTap: () async {
+                var connectivityResult =
+                    await (Connectivity().checkConnectivity());
+                if (connectivityResult == ConnectivityResult.none) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BadConnection()));
+                } else {
+                  await VolounteerManager().getVolounteersMails();
+                  await VolounteerManager().getUnassignedRequests();
+                  Navigator.pushReplacementNamed(context, AddCreator.routeName);
+                }
+              },
             ),
             Padding(
               padding: EdgeInsets.only(
