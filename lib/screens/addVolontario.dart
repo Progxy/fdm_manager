@@ -266,7 +266,7 @@ class _AddVolontarioState extends State<AddVolontario> {
                   }
                 },
                 child: Text(
-                  "Accetta",
+                  "Aggiungi",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,

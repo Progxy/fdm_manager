@@ -1,4 +1,6 @@
 import 'package:fdm_manager/screens/access.dart';
+import 'package:fdm_manager/screens/addManager.dart';
+import 'package:fdm_manager/screens/addVolontario.dart';
 import 'package:fdm_manager/screens/assegnaVolontari.dart';
 import 'package:fdm_manager/screens/badConnection.dart';
 import 'package:fdm_manager/screens/cambioPassword.dart';
@@ -50,6 +52,8 @@ class MyApp extends StatelessWidget {
           InfoRichiesta.routeName: (context) => InfoRichiesta(),
           AssegnazioneVolontari.routeName: (context) => AssegnazioneVolontari(),
           Disdette.routeName: (context) => Disdette(),
+          AddVolontario.routeName: (context) => AddVolontario(),
+          AddManager.routeName: (context) => AddManager(),
         },
       ),
     );

@@ -32,4 +32,14 @@ class AuthenticationService {
       return e.message;
     }
   }
+
+  Future<String> signUp(String email, String password) async {
+    try {
+      await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return "Operazione effetuata con successo!";
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
 }
