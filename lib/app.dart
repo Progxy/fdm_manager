@@ -9,6 +9,7 @@ import 'package:fdm_manager/screens/errorpage.dart';
 import 'package:fdm_manager/screens/feedback.dart';
 import 'package:fdm_manager/screens/home.dart';
 import 'package:fdm_manager/screens/infoRichiesta.dart';
+import 'package:fdm_manager/screens/richiesteArticoli.dart';
 import 'package:fdm_manager/screens/richiesteVisita.dart';
 import 'package:fdm_manager/screens/utilizzo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
           Disdette.routeName: (context) => Disdette(),
           AddVolontario.routeName: (context) => AddVolontario(),
           AddCreator.routeName: (context) => AddCreator(),
+          RichiesteArticoli.routeName: (context) => RichiesteArticoli(),
         },
       ),
     );
