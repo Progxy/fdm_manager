@@ -8,7 +8,7 @@ import 'feedback.dart';
 import 'mainDrawer.dart';
 
 class RichiesteArticoli extends StatefulWidget {
-  static const String routeName = "/richiesteVisita";
+  static const String routeName = "/richiesteArticoli";
 
   @override
   _RichiesteArticoliState createState() => _RichiesteArticoliState();
