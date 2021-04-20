@@ -1,5 +1,5 @@
 import 'package:fdm_manager/screens/access.dart';
-import 'package:fdm_manager/screens/addManager.dart';
+import 'package:fdm_manager/screens/addAdmin.dart';
 import 'package:fdm_manager/screens/addVolontario.dart';
 import 'package:fdm_manager/screens/assegnaVolontari.dart';
 import 'package:fdm_manager/screens/badConnection.dart';
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
           AssegnazioneVolontari.routeName: (context) => AssegnazioneVolontari(),
           Disdette.routeName: (context) => Disdette(),
           AddVolontario.routeName: (context) => AddVolontario(),
-          AddManager.routeName: (context) => AddManager(),
+          AddCreator.routeName: (context) => AddCreator(),
         },
       ),
     );

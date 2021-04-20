@@ -37,7 +37,7 @@ class AuthenticationService {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return "Operazione effetuata con successo!";
+      return "Operazione effettuata con successo!";
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
