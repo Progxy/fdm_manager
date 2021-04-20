@@ -4,7 +4,6 @@ import 'package:fdm_manager/authentication_service.dart';
 import 'package:fdm_manager/screens/home.dart';
 import 'package:fdm_manager/screens/mainDrawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
