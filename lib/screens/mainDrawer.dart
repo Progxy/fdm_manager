@@ -104,7 +104,7 @@ class _MainDrawerState extends State<MainDrawer> {
               },
             ),
             ListTile(
-              title: Text("Richieste visita", style: TextStyle(fontSize: 23)),
+              title: Text("Richieste Visita", style: TextStyle(fontSize: 23)),
               onTap: () async {
                 var connectivityResult =
                     await (Connectivity().checkConnectivity());
@@ -242,9 +242,45 @@ class _MainDrawerState extends State<MainDrawer> {
                 }
               },
             ),
+            ListTile(
+              title: Text("Richieste Articoli", style: TextStyle(fontSize: 23)),
+              onTap: () async {
+                var connectivityResult =
+                    await (Connectivity().checkConnectivity());
+                if (connectivityResult == ConnectivityResult.none) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BadConnection()));
+                } else {
+                  Navigator.pushReplacementNamed(
+                      context, RichiesteVisita.routeName);
+                }
+              },
+              trailing: FutureBuilder(
+                  future: DatabaseInfo().hasRichiesteArticoli(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data
+                          ? Icon(
+                              Icons.notification_important,
+                              color: Colors.yellow[600],
+                              size: 35,
+                            )
+                          : Container(
+                              width: 35,
+                              height: 35,
+                            );
+                    } else {
+                      return Container(
+                        width: 35,
+                        height: 35,
+                      );
+                    }
+                  }),
+            ),
             Padding(
               padding: EdgeInsets.only(
-                top: 305,
+                top: 235,
               ),
               child: Divider(
                 thickness: 1,
