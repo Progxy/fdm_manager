@@ -29,6 +29,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final FirebaseDatabase database = FirebaseDatabase(app: widget.defaultApp);
     final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.defaultApp);
+
     getAccount() async {
       if (name == "Login") {
         await AccountInfo().setFromUserId(database);
@@ -367,11 +368,112 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
-            //TODO: aggiungi numero iscritti di quest'anno compresi i rinnovati!
-            //TODO: aggiungi numero iscritti di sempre!
-            //TODO: aggiungi media anni iscrizione iscritti!
-            //TODO: aggiungi soldi guadagnati quest'anno!
-            //TODO: aggiungi soldi guadagnati oggi!
+            FutureBuilder(
+              future: DatabaseInfo().getYearSubscribed(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: Text(
+                      "Numero di iscritti di quest'anno : ${snapshot.data}",
+                      style: infoStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4.0,
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            FutureBuilder(
+              future: DatabaseInfo().getSubscribed(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: Text(
+                      "Numero di iscritti di sempre : ${snapshot.data}",
+                      style: infoStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4.0,
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            FutureBuilder(
+              future: DatabaseInfo().getTodayMoney(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: Text(
+                      "Soldi guadagnati oggi : ${snapshot.data}",
+                      style: infoStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  print("err : ${snapshot.error}");
+                  return Text(
+                    "error loading data!",
+                    style: infoStyle,
+                    textAlign: TextAlign.center,
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4.0,
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            FutureBuilder(
+              future: DatabaseInfo().getYearMoney(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: Text(
+                      "Soldi guadagnati quest'anno : ${snapshot.data}",
+                      style: infoStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  print("err : ${snapshot.error}");
+                  return Text(
+                    "error loading data!",
+                    style: infoStyle,
+                    textAlign: TextAlign.center,
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4.0,
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: 15,
+            ),
           ],
         ),
       ),

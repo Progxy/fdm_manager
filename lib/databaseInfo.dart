@@ -15,6 +15,96 @@ class DatabaseInfo {
     return result;
   }
 
+  getYearSubscribed() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    int iscritti = 0;
+    await database
+        .reference()
+        .child("Tessere")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      final Map result = new Map.from(snapshot.value);
+      for (var element in result.keys.toList()) {
+        for (var elem in result[element]["anniSociali"].split("-")) {
+          if (elem == DateTime.now().year.toString()) {
+            iscritti++;
+            continue;
+          }
+        }
+      }
+    });
+    return iscritti;
+  }
+
+  getSubscribed() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    int iscritti = 0;
+    await database
+        .reference()
+        .child("Tessere")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      final Map result = new Map.from(snapshot.value);
+      iscritti = result.length;
+    });
+    return iscritti;
+  }
+
+  getYearMoney() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    int tot = 0;
+    await database
+        .reference()
+        .child("IncassiTotali")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      final Map result = new Map.from(snapshot.value);
+      for (var element in result.keys.toList()) {
+        for (var key in result[element].keys.toList()) {
+          if (key == "fattoDa") {
+            continue;
+          }
+          if (key.split("-")[2] == DateTime.now().year.toString()) {
+            tot += int.tryParse(result[element][key]);
+          }
+        }
+      }
+    });
+    return tot;
+  }
+
+  getTodayMoney() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    int tot = 0;
+    await database
+        .reference()
+        .child("IncassiTotali")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      final Map result = new Map.from(snapshot.value);
+      final String today = DateTime.now().day.toString() +
+          "-" +
+          DateTime.now().month.toString() +
+          "-" +
+          DateTime.now().year.toString();
+      for (var element in result.keys.toList()) {
+        for (var key in result[element].keys.toList()) {
+          if (key == "fattoDa") {
+            continue;
+          }
+          if (result[element][key] == today) {
+            tot += int.tryParse(result[element][key]);
+          }
+        }
+      }
+    });
+    return tot;
+  }
+
   getRichiesteVisita() async {
     final FirebaseDatabase database = FirebaseDatabase.instance;
     Map result;
