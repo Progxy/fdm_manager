@@ -670,7 +670,7 @@ class _InfoContentState extends State<InfoContent> {
                         linkStorage,
                         email);
                     if (resultAccepting == null) {
-                      return true;
+                      return;
                     }
                     await dialog.hide();
                     if (Platform.isIOS) {
