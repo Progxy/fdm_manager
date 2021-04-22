@@ -367,6 +367,11 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
+            //TODO: aggiungi numero iscritti di quest'anno compresi i rinnovati!
+            //TODO: aggiungi numero iscritti di sempre!
+            //TODO: aggiungi media anni iscrizione iscritti!
+            //TODO: aggiungi soldi guadagnati quest'anno!
+            //TODO: aggiungi soldi guadagnati oggi!
           ],
         ),
       ),
