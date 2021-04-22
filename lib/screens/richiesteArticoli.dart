@@ -1,8 +1,8 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/databaseInfo.dart';
-import 'package:fdm_manager/screens/infoRichiesta.dart';
 import 'package:fdm_manager/screens/utilizzo.dart';
 import 'package:flutter/material.dart';
+import 'approvaArticoli.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'mainDrawer.dart';
@@ -48,9 +48,6 @@ class _RichiesteArticoliState extends State<RichiesteArticoli> {
     List<Widget> result = [];
     int index = 0;
     for (var key in keys) {
-      if (values[index]["presaVisione"] == "si") {
-        continue;
-      }
       final List infoValue = [values[index], key];
       result.add(
         Center(
@@ -58,7 +55,8 @@ class _RichiesteArticoliState extends State<RichiesteArticoli> {
             padding: const EdgeInsets.only(top: 25.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, InfoRichiesta.routeName,
+                InfoContent.isLoaded = false;
+                Navigator.pushNamed(context, InfoContent.routeName,
                     arguments: infoValue);
               },
               child: Container(
@@ -142,12 +140,12 @@ class _RichiesteArticoliState extends State<RichiesteArticoli> {
               height: 15,
             ),
             FutureBuilder(
-              future: DatabaseInfo().getRichiesteVisita(),
+              future: DatabaseInfo().getRichiesteArticoli(),
               builder: (context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
-                  final Map richiesteVisita = snapshot.data;
+                  final Map richiesteArticoli = snapshot.data;
                   return Column(
-                    children: loadRequests(richiesteVisita),
+                    children: loadRequests(richiesteArticoli),
                   );
                 } else if (snapshot.hasError) {
                   final err = snapshot.error;

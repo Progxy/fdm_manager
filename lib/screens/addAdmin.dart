@@ -66,7 +66,9 @@ class _AddCreatorState extends State<AddCreator> {
   getNewUserUid(String email, String password) async {
     await AuthenticationService(widget.auth)
         .signIn(email: email, password: password);
-    return widget.auth.currentUser.uid;
+    final String result = widget.auth.currentUser.uid;
+    await AuthenticationService(widget.auth).signOut();
+    return result;
   }
 
   String passwordGenerator() {

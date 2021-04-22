@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:fdm_manager/firebaseProjectsManager.dart';
 import 'package:fdm_manager/screens/richiesteArticoli.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer2/mailer.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:video_player/video_player.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../mapDecoder.dart';
 import '../mapToWidget.dart';
 import 'badConnection.dart';
@@ -202,7 +205,17 @@ class _InfoContentState extends State<InfoContent> {
     return result;
   }
 
-  refuseOperation(String prenotazioneId, String email) async {
+  deleteData(String prenotazioneId, String title) {
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("Articoli");
+    databaseReference.child(prenotazioneId).remove();
+    firebase_storage.FirebaseStorage.instanceFor(
+            app: FirebaseProjectsManager().getCreatorApp())
+        .ref(title)
+        .delete();
+  }
+
+  refuseOperation(String prenotazioneId, String email, String title) async {
     bool resultOperation;
     if (Platform.isIOS) {
       await showCupertinoDialog(
@@ -260,10 +273,17 @@ class _InfoContentState extends State<InfoContent> {
             CupertinoDialogAction(
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-                  final bool result = true;
+                  final String text =
+                      "Siamo dispiaciuti ma il suo articolo è stato rifiutato poichè : \n\n${_messaggioController.text.trim()}\n\nCordiali Saluti, Agostino Burberi.";
+                  resultOperation = sendResponse(text, email,
+                      "Rifiuto Articolo per Fondazione Don Milani");
+                  if (resultOperation) {
+                    deleteData(prenotazioneId, title);
+                  } else {
+                    return;
+                  }
                   _messaggioController.clear();
                   Navigator.of(context, rootNavigator: true).pop('dialog');
-                  resultOperation = result;
                 }
               },
               child: Text(
@@ -332,10 +352,17 @@ class _InfoContentState extends State<InfoContent> {
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-                  final bool result = true;
+                  final String text =
+                      "Siamo dispiaciuti ma il suo articolo è stato rifiutato poichè : \n\n${_messaggioController.text.trim()}\n\nCordiali Saluti, Agostino Burberi.";
+                  resultOperation = sendResponse(text, email,
+                      "Rifiuto Articolo per Fondazione Don Milani");
+                  if (resultOperation) {
+                    deleteData(prenotazioneId, title);
+                  } else {
+                    return;
+                  }
                   _messaggioController.clear();
                   Navigator.of(context, rootNavigator: true).pop('dialog');
-                  resultOperation = result;
                 }
               },
               child: Text(
@@ -360,12 +387,30 @@ class _InfoContentState extends State<InfoContent> {
         ),
       );
     }
-    //TODO: elimina i dati e lo storage e manda email di rifiuto!
     return resultOperation;
   }
 
-  accetta() {
-    //TODO: copia funzione come nel workbench se sei un'amministratore!
+  accetta(String title, String date, String typeArticle, String posterImage,
+      String author, String contentContainer, String linkStorage) async {
+    Map resultUpload = {
+      "Title": title,
+      "Date": date,
+      "PosterImage": posterImage,
+      "Content": contentContainer,
+      "Author": author,
+      "VideoLink": linkStorage,
+    };
+    try {
+      var databaseReference =
+          FirebaseDatabase(app: FirebaseProjectsManager().getMainApp())
+              .reference()
+              .child(typeArticle + "/" + title);
+      databaseReference.set(resultUpload);
+      return true;
+    } catch (e) {
+      print("An error occurred while posting on database : $e");
+      return false;
+    }
   }
 
   getMapValueIndex(value, Map data, bool isValue) {
@@ -469,7 +514,20 @@ class _InfoContentState extends State<InfoContent> {
                     ProgressDialog dialog = new ProgressDialog(context);
                     dialog.style(message: 'Caricamento...');
                     await dialog.show();
-                    final bool resultAccepting = true;
+                    final String date = infoContent["Date"];
+                    final String typeArticle = infoContent["ArticleType"];
+                    final String posterImage = infoContent["PosterImage"];
+                    final String author = infoContent["Author"];
+                    final String contentContainer = infoContent["Content"];
+                    final String linkStorage = infoContent["VideoLink"];
+                    final bool resultAccepting = accetta(
+                        title,
+                        date,
+                        typeArticle,
+                        posterImage,
+                        author,
+                        contentContainer,
+                        linkStorage);
                     if (resultAccepting == null) {
                       return;
                     }

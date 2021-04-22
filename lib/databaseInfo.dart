@@ -93,4 +93,35 @@ class DatabaseInfo {
     }
     return newRequest;
   }
+
+  getRichiesteArticoli() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Articoli")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
+  hasRichiesteArticoli() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Articoli")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    if (result.length > 0) {
+      return true;
+    }
+    return false;
+  }
 }
