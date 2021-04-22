@@ -205,17 +205,17 @@ class _InfoContentState extends State<InfoContent> {
     return result;
   }
 
-  deleteData(String prenotazioneId, String title) {
+  deleteData(String title) {
     final databaseReference =
         FirebaseDatabase.instance.reference().child("Articoli");
-    databaseReference.child(prenotazioneId).remove();
+    databaseReference.child(title).remove();
     firebase_storage.FirebaseStorage.instanceFor(
             app: FirebaseProjectsManager().getCreatorApp())
         .ref(title)
         .delete();
   }
 
-  refuseOperation(String prenotazioneId, String email, String title) async {
+  refuseOperation(String email, String title) async {
     bool resultOperation;
     if (Platform.isIOS) {
       await showCupertinoDialog(
@@ -275,10 +275,10 @@ class _InfoContentState extends State<InfoContent> {
                 if (_formKey.currentState.validate()) {
                   final String text =
                       "Siamo dispiaciuti ma il suo articolo è stato rifiutato poichè : \n\n${_messaggioController.text.trim()}\n\nCordiali Saluti, Agostino Burberi.";
-                  resultOperation = sendResponse(text, email,
+                  resultOperation = await sendResponse(text, email,
                       "Rifiuto Articolo per Fondazione Don Milani");
                   if (resultOperation) {
-                    deleteData(prenotazioneId, title);
+                    deleteData(title);
                   } else {
                     return;
                   }
@@ -288,6 +288,17 @@ class _InfoContentState extends State<InfoContent> {
               },
               child: Text(
                 "Conferma",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+              },
+              child: Text(
+                "Annulla",
                 style: TextStyle(
                   fontSize: 28,
                 ),
@@ -354,10 +365,10 @@ class _InfoContentState extends State<InfoContent> {
                 if (_formKey.currentState.validate()) {
                   final String text =
                       "Siamo dispiaciuti ma il suo articolo è stato rifiutato poichè : \n\n${_messaggioController.text.trim()}\n\nCordiali Saluti, Agostino Burberi.";
-                  resultOperation = sendResponse(text, email,
+                  resultOperation = await sendResponse(text, email,
                       "Rifiuto Articolo per Fondazione Don Milani");
                   if (resultOperation) {
-                    deleteData(prenotazioneId, title);
+                    deleteData(title);
                   } else {
                     return;
                   }
@@ -390,8 +401,130 @@ class _InfoContentState extends State<InfoContent> {
     return resultOperation;
   }
 
-  accetta(String title, String date, String typeArticle, String posterImage,
-      String author, String contentContainer, String linkStorage) async {
+  accetta(
+      String title,
+      String date,
+      String typeArticle,
+      String posterImage,
+      String author,
+      String contentContainer,
+      String linkStorage,
+      String email) async {
+    bool go = false;
+    if (Platform.isIOS) {
+      await showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text(
+            "Approvazione Articolo",
+            style: TextStyle(
+              fontSize: 28,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: _formKey,
+              child: Column(
+                children: [
+                  Text(
+                    "Approvare l'articolo ?\nUna volta approvato non si potrà tornare indietro!",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                go = true;
+              },
+              child: Text(
+                "Conferma",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                go = false;
+              },
+              child: Text(
+                "Annulla",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text(
+            "Rifiuto Articolo",
+            style: TextStyle(
+              fontSize: 28,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: _formKey,
+              child: Column(
+                children: [
+                  Text(
+                    "Approvare l'articolo ?\nUna volta approvato non si potrà tornare indietro!",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                go = true;
+              },
+              child: Text(
+                "Conferma",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                go = false;
+              },
+              child: Text(
+                "Annulla",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    if (!go) {
+      return null;
+    }
     Map resultUpload = {
       "Title": title,
       "Date": date,
@@ -401,11 +534,17 @@ class _InfoContentState extends State<InfoContent> {
       "VideoLink": linkStorage,
     };
     try {
-      var databaseReference =
+      final String text =
+          "Siamo felici di annunciarle che il suo articolo è stato approvato!\n\nCordiali Saluti, Agostino Burberi.";
+      await sendResponse(
+          text, email, "Approvazione Articolo per Fondazione Don Milani");
+      final databaseReference =
           FirebaseDatabase(app: FirebaseProjectsManager().getMainApp())
               .reference()
               .child(typeArticle + "/" + title);
       databaseReference.set(resultUpload);
+      final db = FirebaseDatabase.instance.reference().child("Articoli");
+      db.child(title).remove();
       return true;
     } catch (e) {
       print("An error occurred while posting on database : $e");
@@ -520,6 +659,7 @@ class _InfoContentState extends State<InfoContent> {
                     final String author = infoContent["Author"];
                     final String contentContainer = infoContent["Content"];
                     final String linkStorage = infoContent["VideoLink"];
+                    final String email = infoContent["Email"];
                     final bool resultAccepting = accetta(
                         title,
                         date,
@@ -527,9 +667,10 @@ class _InfoContentState extends State<InfoContent> {
                         posterImage,
                         author,
                         contentContainer,
-                        linkStorage);
+                        linkStorage,
+                        email);
                     if (resultAccepting == null) {
-                      return;
+                      return true;
                     }
                     await dialog.hide();
                     if (Platform.isIOS) {
@@ -624,7 +765,9 @@ class _InfoContentState extends State<InfoContent> {
                     ProgressDialog dialog = new ProgressDialog(context);
                     dialog.style(message: 'Caricamento...');
                     await dialog.show();
-                    final bool resultRefusing = true;
+                    final String email = infoContent["Email"];
+                    final bool resultRefusing =
+                        await refuseOperation(email, title);
                     if (resultRefusing == null) {
                       return;
                     }
