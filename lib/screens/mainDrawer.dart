@@ -281,7 +281,7 @@ class _MainDrawerState extends State<MainDrawer> {
             ),
             Padding(
               padding: EdgeInsets.only(
-                top: 235,
+                top: 15,
               ),
               child: Divider(
                 thickness: 1,

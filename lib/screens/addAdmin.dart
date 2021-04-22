@@ -154,74 +154,76 @@ class _AddCreatorState extends State<AddCreator> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(
-              height: 15,
+              height: 25,
             ),
             Form(
               autovalidateMode: AutovalidateMode.onUserInteraction,
               key: _formKey,
               child: Column(
                 children: [
-                  SizedBox(
-                    width: width * 1.35,
-                    child: TextFormField(
-                      controller: _nameController,
-                      maxLines: 20,
-                      decoration: const InputDecoration(
-                        hintText: "Inserire nome e cognome",
-                        hintStyle: TextStyle(
-                          fontSize: 23.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                  Center(
+                    child: SizedBox(
+                      width: width * 1.35,
+                      child: TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          hintText: "Inserire nome e cognome",
+                          hintStyle: TextStyle(
+                            fontSize: 23.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                          border: OutlineInputBorder(),
+                          labelText: "Nome e Cognome",
+                          labelStyle: TextStyle(
+                            fontSize: 23.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
                         ),
-                        border: OutlineInputBorder(),
-                        labelText: "Nome e Cognome",
-                        labelStyle: TextStyle(
-                          fontSize: 23.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Dati Mancanti";
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Dati Mancanti";
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 35,
                   ),
-                  SizedBox(
-                    width: width * 1.35,
-                    child: TextFormField(
-                      controller: _emailController,
-                      maxLines: 20,
-                      decoration: const InputDecoration(
-                        hintText: "Inserire l'email",
-                        hintStyle: TextStyle(
-                          fontSize: 23.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                  Center(
+                    child: SizedBox(
+                      width: width * 1.35,
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          hintText: "Inserire l'email",
+                          hintStyle: TextStyle(
+                            fontSize: 23.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                          border: OutlineInputBorder(),
+                          labelText: "Email",
+                          labelStyle: TextStyle(
+                            fontSize: 23.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
                         ),
-                        border: OutlineInputBorder(),
-                        labelText: "Email",
-                        labelStyle: TextStyle(
-                          fontSize: 23.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Dati Mancanti";
+                          } else if (RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value)) {
+                            return "Email Invalida!";
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Dati Mancanti";
-                        } else if (RegExp(
-                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                            .hasMatch(value)) {
-                          return "Email Invalida!";
-                        }
-                        return null;
-                      },
                     ),
                   ),
                 ],
