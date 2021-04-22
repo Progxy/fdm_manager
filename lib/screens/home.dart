@@ -420,7 +420,7 @@ class _HomeState extends State<Home> {
                 if (snapshot.hasData) {
                   return Center(
                     child: Text(
-                      "Soldi guadagnati oggi : ${snapshot.data}",
+                      "Soldi guadagnati oggi : ${snapshot.data}€",
                       style: infoStyle,
                       textAlign: TextAlign.center,
                     ),
@@ -450,7 +450,7 @@ class _HomeState extends State<Home> {
                 if (snapshot.hasData) {
                   return Center(
                     child: Text(
-                      "Soldi guadagnati quest'anno : ${snapshot.data}",
+                      "Soldi guadagnati quest'anno : ${snapshot.data}€",
                       style: infoStyle,
                       textAlign: TextAlign.center,
                     ),
