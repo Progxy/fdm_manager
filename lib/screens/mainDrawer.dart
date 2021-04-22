@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/screens/disdette.dart';
+import 'package:fdm_manager/screens/richiesteArticoli.dart';
 import 'package:fdm_manager/screens/richiesteVisita.dart';
 import 'package:fdm_manager/screens/volounteersManager.dart';
 import 'package:flutter/material.dart';
@@ -252,7 +253,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       MaterialPageRoute(builder: (context) => BadConnection()));
                 } else {
                   Navigator.pushReplacementNamed(
-                      context, RichiesteVisita.routeName);
+                      context, RichiesteArticoli.routeName);
                 }
               },
               trailing: FutureBuilder(
