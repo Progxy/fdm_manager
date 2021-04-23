@@ -51,6 +51,7 @@ class _DataLoaderState extends State<DataLoader> {
   }
 
   loadData(String choice) async {
+    final double width = MediaQuery.of(context).size.width;
     Widget contents;
     switch (choice) {
       case "Tessere":
@@ -70,7 +71,7 @@ class _DataLoaderState extends State<DataLoader> {
           final String intestazione = info["intestazione"];
           final String nome = info["nome"];
           final String provincia = info["provincia"];
-          final String scaduto = info["scaduto"];
+          final String scaduto = info["scaduto"].toString();
           final String telefono = info["telefono"];
           content.add(
             DataRow(cells: [
@@ -91,94 +92,97 @@ class _DataLoaderState extends State<DataLoader> {
             ]),
           );
         }
-        contents = InteractiveViewer(
-          constrained: false,
-          child: DataTable(columns: [
-            DataColumn(
-              label: Text(
-                "Tipo di Tessera",
-                style: titleStyle,
+        contents = SizedBox(
+          width: width * .95,
+          child: InteractiveViewer(
+            constrained: false,
+            child: DataTable(columns: [
+              DataColumn(
+                label: Text(
+                  "Tipo di Tessera",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Anni Sociali",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Anni Sociali",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Cap",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Cap",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Città",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Città",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Cognome",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Cognome",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Nome",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Nome",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Email",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Email",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Fatto Da",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Fatto Da",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Indirizzo",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Indirizzo",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Intestazione",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Intestazione",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Data",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Data",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Provincia",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Provincia",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Scaduta",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Scaduta",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Telefono",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Telefono",
+                  style: titleStyle,
+                ),
               ),
-            ),
-          ], rows: content),
+            ], rows: content),
+          ),
         );
         break;
       case "Libri":
@@ -212,58 +216,61 @@ class _DataLoaderState extends State<DataLoader> {
             ]),
           );
         }
-        contents = InteractiveViewer(
-          constrained: false,
-          child: DataTable(columns: [
-            DataColumn(
-              label: Text(
-                "Lettera A Una Professoressa",
-                style: titleStyle,
+        contents = SizedBox(
+          width: width * .95,
+          child: InteractiveViewer(
+            constrained: false,
+            child: DataTable(columns: [
+              DataColumn(
+                label: Text(
+                  "Lettera A Una Professoressa",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "L'Obbedienza Non è Una Virtù",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "L'Obbedienza Non è Una Virtù",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "La Parola Fa Eguali",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "La Parola Fa Eguali",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Percorso Didattico",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Percorso Didattico",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Il Silenzio Diventa Voce",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Il Silenzio Diventa Voce",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Totale",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Totale",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Data",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Data",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Fatto Da",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Fatto Da",
+                  style: titleStyle,
+                ),
               ),
-            ),
-          ], rows: content),
+            ], rows: content),
+          ),
         );
         break;
       case "Contributi":
@@ -286,40 +293,43 @@ class _DataLoaderState extends State<DataLoader> {
             ]),
           );
         }
-        contents = InteractiveViewer(
-          constrained: false,
-          child: DataTable(columns: [
-            DataColumn(
-              label: Text(
-                "Nome",
-                style: titleStyle,
+        contents = SizedBox(
+          width: width * .95,
+          child: InteractiveViewer(
+            constrained: false,
+            child: DataTable(columns: [
+              DataColumn(
+                label: Text(
+                  "Nome",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Cognome",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Cognome",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Valore Contributo",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Valore Contributo",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Data",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Data",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Fatto Da",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Fatto Da",
+                  style: titleStyle,
+                ),
               ),
-            ),
-          ], rows: content),
+            ], rows: content),
+          ),
         );
         break;
       case "Rinnovi":
@@ -342,40 +352,43 @@ class _DataLoaderState extends State<DataLoader> {
             ]),
           );
         }
-        contents = InteractiveViewer(
-          constrained: false,
-          child: DataTable(columns: [
-            DataColumn(
-              label: Text(
-                "Nome",
-                style: titleStyle,
+        contents = SizedBox(
+          width: width * .95,
+          child: InteractiveViewer(
+            constrained: false,
+            child: DataTable(columns: [
+              DataColumn(
+                label: Text(
+                  "Nome",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Cognome",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Cognome",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Email",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Email",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Anni Sociali",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Anni Sociali",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Tipo di Tessera",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Tipo di Tessera",
+                  style: titleStyle,
+                ),
               ),
-            ),
-          ], rows: content),
+            ], rows: content),
+          ),
         );
 
         break;
@@ -401,28 +414,31 @@ class _DataLoaderState extends State<DataLoader> {
             ]),
           );
         }
-        contents = InteractiveViewer(
-          constrained: false,
-          child: DataTable(columns: [
-            DataColumn(
-              label: Text(
-                "Incasso",
-                style: titleStyle,
+        contents = SizedBox(
+          width: width * .95,
+          child: InteractiveViewer(
+            constrained: false,
+            child: DataTable(columns: [
+              DataColumn(
+                label: Text(
+                  "Incasso",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Data",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Data",
+                  style: titleStyle,
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Fatto Da",
-                style: titleStyle,
+              DataColumn(
+                label: Text(
+                  "Fatto Da",
+                  style: titleStyle,
+                ),
               ),
-            ),
-          ], rows: content),
+            ], rows: content),
+          ),
         );
         break;
     }
@@ -477,7 +493,7 @@ class _DataLoaderState extends State<DataLoader> {
             ),
             Center(
               child: SizedBox(
-                width: width,
+                width: width * .85,
                 child: DropdownButton<String>(
                   isExpanded: true,
                   isDense: true,
@@ -498,7 +514,7 @@ class _DataLoaderState extends State<DataLoader> {
                   items: types
                       .map((type) => new DropdownMenuItem<String>(
                             value: type,
-                            child: type,
+                            child: Text(type),
                           ))
                       .toList(),
                 ),
@@ -511,7 +527,10 @@ class _DataLoaderState extends State<DataLoader> {
               future: loadData(choice),
               builder: (context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
-                  return snapshot.data;
+                  return SizedBox(
+                    child: snapshot.data,
+                    width: width * .95,
+                  );
                 } else if (snapshot.hasError) {
                   print("err : ${snapshot.error}");
                   return Text(
