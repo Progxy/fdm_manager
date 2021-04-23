@@ -216,9 +216,9 @@ class _AddCreatorState extends State<AddCreator> {
                         validator: (value) {
                           if (value.isEmpty) {
                             return "Dati Mancanti";
-                          } else if (RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(value)) {
+                          } else if (RegExp(r"^[\w\d_]+@[\w\d]+\.[\w]{2,3}$")
+                                  .hasMatch(value.trim()) ==
+                              false) {
                             return "Email Invalida!";
                           }
                           return null;
