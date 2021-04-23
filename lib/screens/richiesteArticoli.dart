@@ -44,11 +44,9 @@ class _RichiesteArticoliState extends State<RichiesteArticoli> {
 
   loadRequests(Map data) {
     final List keys = data.keys.toList();
-    final List values = data.values.toList();
     List<Widget> result = [];
-    int index = 0;
     for (var key in keys) {
-      final List infoValue = [values[index], key];
+      final Map infoValue = data[key];
       result.add(
         Center(
           child: Padding(
@@ -89,7 +87,6 @@ class _RichiesteArticoliState extends State<RichiesteArticoli> {
           ),
         ),
       );
-      index++;
     }
     return result;
   }
