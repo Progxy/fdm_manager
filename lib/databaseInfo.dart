@@ -105,6 +105,76 @@ class DatabaseInfo {
     return tot;
   }
 
+  getTessere() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Tessere")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
+  getLibri() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Libri")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
+  getContributi() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Contributi")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
+  getIncassi() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("IncassiTotali")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
+  getRinnovi() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Rinnovi")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
   getRichiesteVisita() async {
     final FirebaseDatabase database = FirebaseDatabase.instance;
     Map result;
