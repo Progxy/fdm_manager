@@ -9,7 +9,7 @@ import 'feedback.dart';
 import 'mainDrawer.dart';
 
 class DataLoader extends StatefulWidget {
-  static const String routeName = "/home";
+  static const String routeName = "/dataLoader";
   final FirebaseApp defaultApp = Firebase.app();
 
   @override
@@ -431,6 +431,7 @@ class _DataLoaderState extends State<DataLoader> {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -474,29 +475,34 @@ class _DataLoaderState extends State<DataLoader> {
             SizedBox(
               height: 25,
             ),
-            DropdownButton<String>(
-              isExpanded: true,
-              isDense: true,
-              value: choice,
-              icon: Icon(Icons.arrow_downward),
-              iconSize: 40,
-              elevation: 20,
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 23,
-                fontWeight: FontWeight.w600,
+            Center(
+              child: SizedBox(
+                width: width,
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  isDense: true,
+                  value: choice,
+                  icon: Icon(Icons.arrow_downward),
+                  iconSize: 40,
+                  elevation: 20,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      choice = newValue;
+                    });
+                  },
+                  items: types
+                      .map((type) => new DropdownMenuItem<String>(
+                            value: type,
+                            child: type,
+                          ))
+                      .toList(),
+                ),
               ),
-              onChanged: (String newValue) {
-                setState(() {
-                  choice = newValue;
-                });
-              },
-              items: types
-                  .map((type) => new DropdownMenuItem<String>(
-                        value: type,
-                        child: type,
-                      ))
-                  .toList(),
             ),
             SizedBox(
               height: 25,

@@ -2,6 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/screens/disdette.dart';
 import 'package:fdm_manager/screens/richiesteArticoli.dart';
 import 'package:fdm_manager/screens/richiesteVisita.dart';
+import 'package:fdm_manager/screens/showData.dart';
 import 'package:fdm_manager/screens/volounteersManager.dart';
 import 'package:flutter/material.dart';
 
@@ -279,14 +280,22 @@ class _MainDrawerState extends State<MainDrawer> {
                     }
                   }),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: 15,
-              ),
-              child: Divider(
-                thickness: 1,
-                color: Color.fromARGB(255, 24, 37, 102),
-              ),
+            ListTile(
+              title: Text("Dati Fondazione", style: TextStyle(fontSize: 23)),
+              onTap: () async {
+                var connectivityResult =
+                    await (Connectivity().checkConnectivity());
+                if (connectivityResult == ConnectivityResult.none) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BadConnection()));
+                } else {
+                  Navigator.pushReplacementNamed(context, DataLoader.routeName);
+                }
+              },
+            ),
+            Divider(
+              thickness: 1,
+              color: Color.fromARGB(255, 24, 37, 102),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,

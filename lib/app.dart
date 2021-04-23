@@ -12,6 +12,7 @@ import 'package:fdm_manager/screens/home.dart';
 import 'package:fdm_manager/screens/infoRichiesta.dart';
 import 'package:fdm_manager/screens/richiesteArticoli.dart';
 import 'package:fdm_manager/screens/richiesteVisita.dart';
+import 'package:fdm_manager/screens/showData.dart';
 import 'package:fdm_manager/screens/utilizzo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
           AddCreator.routeName: (context) => AddCreator(),
           RichiesteArticoli.routeName: (context) => RichiesteArticoli(),
           InfoContent.routeName: (context) => InfoContent(),
+          DataLoader.routeName: (context) => DataLoader(),
         },
       ),
     );
