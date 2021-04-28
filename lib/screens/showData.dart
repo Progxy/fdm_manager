@@ -52,6 +52,7 @@ class _DataLoaderState extends State<DataLoader> {
 
   loadData(String choice) async {
     final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
     Widget contents;
     switch (choice) {
       case "Tessere":
@@ -73,27 +74,46 @@ class _DataLoaderState extends State<DataLoader> {
           final String provincia = info["provincia"];
           final String scaduto = info["scaduto"].toString();
           final String telefono = info["telefono"];
+          final bool asMoreYear = (anniSociali.split("-").length) > 1;
           content.add(
             DataRow(cells: [
               DataCell(Text(typeTessera)),
-              DataCell(Text(anniSociali)),
+              DataCell(Padding(
+                padding: EdgeInsets.only(left: asMoreYear ? 15.0 : 40.0),
+                child: Text(anniSociali),
+              )),
               DataCell(Text(cap)),
               DataCell(Text(citta)),
-              DataCell(Text(cognome)),
-              DataCell(Text(nome)),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 33.0),
+                child: Text(cognome),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Text(nome),
+              )),
               DataCell(Text(email)),
               DataCell(Text(fattoDa)),
               DataCell(Text(indirizzo)),
-              DataCell(Text(intestazione)),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 35.0),
+                child: Text(intestazione),
+              )),
               DataCell(Text(data)),
-              DataCell(Text(provincia)),
-              DataCell(Text(scaduto == "true" ? "Sì" : "No")),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 40.0),
+                child: Text(provincia),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 35.0),
+                child: Text(scaduto == "true" ? "Sì" : "No"),
+              )),
               DataCell(Text(telefono)),
             ]),
           );
         }
-        contents = SizedBox(
-          width: width * .95,
+        contents = ConstrainedBox(
+          constraints: BoxConstraints.tight(Size(width * .95, height)),
           child: InteractiveViewer(
             constrained: false,
             child: DataTable(columns: [
@@ -197,27 +217,58 @@ class _DataLoaderState extends State<DataLoader> {
           final String parolaEguali = info["ParolaEguali"];
           final String percorsoDidattico = info["PercorsoDidattico"];
           final String silenzioVoce = info["SilenzioVoce"];
-          final String totale = (int.parse(gianni) +
-                  int.parse(obbedienzaVirtu) +
-                  int.parse(parolaEguali) +
-                  int.parse(percorsoDidattico) +
-                  int.parse(silenzioVoce))
-              .toString();
+          final String totale = ((int.parse(gianni) * 10) +
+                      (int.parse(obbedienzaVirtu) * 8) +
+                      (int.parse(parolaEguali) * 10) +
+                      (int.parse(percorsoDidattico) * 6) +
+                      (int.parse(silenzioVoce) * 6))
+                  .toString() +
+              "€";
           content.add(
             DataRow(cells: [
-              DataCell(Text(gianni)),
-              DataCell(Text(obbedienzaVirtu)),
-              DataCell(Text(parolaEguali)),
-              DataCell(Text(percorsoDidattico)),
-              DataCell(Text(silenzioVoce)),
-              DataCell(Text(totale)),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 100.0),
+                child: Text(
+                  gianni,
+                ),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 225.0),
+                child: Text(
+                  obbedienzaVirtu,
+                ),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 102.0),
+                child: Text(
+                  parolaEguali,
+                ),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 100.0),
+                child: Text(
+                  percorsoDidattico,
+                ),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 110.0),
+                child: Text(
+                  silenzioVoce,
+                ),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Text(
+                  totale,
+                ),
+              )),
               DataCell(Text(data)),
               DataCell(Text(fattoDa)),
             ]),
           );
         }
-        contents = SizedBox(
-          width: width * .95,
+        contents = ConstrainedBox(
+          constraints: BoxConstraints.tight(Size(width * .95, height)),
           child: InteractiveViewer(
             constrained: false,
             child: DataTable(columns: [
@@ -229,7 +280,7 @@ class _DataLoaderState extends State<DataLoader> {
               ),
               DataColumn(
                 label: Text(
-                  "L'Obbedienza Non è Una Virtù",
+                  "L'Obbedienza Non E' Più Una Virtù",
                   style: titleStyle,
                 ),
               ),
@@ -285,16 +336,25 @@ class _DataLoaderState extends State<DataLoader> {
           final String cognome = info["cognome"];
           content.add(
             DataRow(cells: [
-              DataCell(Text(nome)),
-              DataCell(Text(cognome)),
-              DataCell(Text(valoreContributo)),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Text(nome),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 33.0),
+                child: Text(cognome),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 70.0),
+                child: Text(valoreContributo),
+              )),
               DataCell(Text(data)),
               DataCell(Text(fattoDa)),
             ]),
           );
         }
-        contents = SizedBox(
-          width: width * .95,
+        contents = ConstrainedBox(
+          constraints: BoxConstraints.tight(Size(width * .95, height)),
           child: InteractiveViewer(
             constrained: false,
             child: DataTable(columns: [
@@ -344,16 +404,28 @@ class _DataLoaderState extends State<DataLoader> {
           final String cognome = info["cognome"];
           content.add(
             DataRow(cells: [
-              DataCell(Text(nome)),
-              DataCell(Text(cognome)),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Text(nome),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 33.0),
+                child: Text(cognome),
+              )),
               DataCell(Text(email)),
-              DataCell(Text(anniSociali)),
-              DataCell(Text(tipoTessera)),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Text(anniSociali),
+              )),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 40.0),
+                child: Text(tipoTessera),
+              )),
             ]),
           );
         }
-        contents = SizedBox(
-          width: width * .95,
+        contents = ConstrainedBox(
+          constraints: BoxConstraints.tight(Size(width * .95, height)),
           child: InteractiveViewer(
             constrained: false,
             child: DataTable(columns: [
@@ -408,14 +480,17 @@ class _DataLoaderState extends State<DataLoader> {
           }
           content.add(
             DataRow(cells: [
-              DataCell(Text(incasso)),
+              DataCell(Padding(
+                padding: const EdgeInsets.only(left: 25.0),
+                child: Text(incasso),
+              )),
               DataCell(Text(data)),
               DataCell(Text(fattoDa)),
             ]),
           );
         }
-        contents = SizedBox(
-          width: width * .95,
+        contents = ConstrainedBox(
+          constraints: BoxConstraints.tight(Size(width * .95, height)),
           child: InteractiveViewer(
             constrained: false,
             child: DataTable(columns: [
@@ -521,7 +596,7 @@ class _DataLoaderState extends State<DataLoader> {
               ),
             ),
             SizedBox(
-              height: 25,
+              height: 35,
             ),
             FutureBuilder(
               future: loadData(choice),
@@ -542,7 +617,6 @@ class _DataLoaderState extends State<DataLoader> {
                 return Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 4.0,
-                    backgroundColor: Colors.white,
                   ),
                 );
               },
