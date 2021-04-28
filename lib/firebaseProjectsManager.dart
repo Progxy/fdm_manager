@@ -46,7 +46,7 @@ class FirebaseProjectsManager {
   }
 
   getCreatorApp() {
-    return desktopApp;
+    return creatorApp;
   }
 
   connectFirebaseDesktopApp() async {

@@ -45,48 +45,63 @@ class _RichiesteArticoliState extends State<RichiesteArticoli> {
   loadRequests(Map data) {
     final List keys = data.keys.toList();
     List<Widget> result = [];
-    for (var key in keys) {
-      final Map infoValue = data[key];
+    if (keys.isEmpty) {
       result.add(
         Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 25.0),
-            child: GestureDetector(
-              onTap: () {
-                InfoContent.isLoaded = false;
-                Navigator.pushNamed(context, InfoContent.routeName,
-                    arguments: infoValue);
-              },
-              child: Container(
-                width: 300,
-                height: 75,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 10,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    key,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 24, 37, 102),
-                      fontSize: 20,
+          child: Text(
+            "Nessuna Richiesta Ricevuta !",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+    } else {
+      for (var key in keys) {
+        final Map infoValue = data[key];
+        result.add(
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 25.0),
+              child: GestureDetector(
+                onTap: () {
+                  InfoContent.isLoaded = false;
+                  Navigator.pushNamed(context, InfoContent.routeName,
+                      arguments: infoValue);
+                },
+                child: Container(
+                  width: 300,
+                  height: 75,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      key,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 24, 37, 102),
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
     return result;
   }
@@ -145,8 +160,16 @@ class _RichiesteArticoliState extends State<RichiesteArticoli> {
                     children: loadRequests(richiesteArticoli),
                   );
                 } else if (snapshot.hasError) {
-                  final err = snapshot.error;
-                  return Text("Error  : $err");
+                  return Center(
+                    child: Text(
+                      "Nessuna Richiesta Ricevuta !",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  );
                 }
                 return Center(
                   child: CircularProgressIndicator(

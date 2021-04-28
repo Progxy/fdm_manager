@@ -59,7 +59,7 @@ class _AddCreatorState extends State<AddCreator> {
 
   addDataToDatabase(String email, String name, String id) {
     final databaseReference = widget.database.reference();
-    databaseReference.child(id).set({name: email});
+    databaseReference.child("$id/User").set({name: email});
     return;
   }
 
@@ -100,12 +100,12 @@ class _AddCreatorState extends State<AddCreator> {
     final String password = passwordGenerator();
     final String result =
         await AuthenticationService(widget.auth).signUp(email, password);
-    if (result == "Operazione effetuata con successo!") {
+    if (result == "Operazione effettuata con successo!") {
       final String id = await getNewUserUid(email, password);
       addDataToDatabase(email, name, id);
       final String text =
-          "Salve,\n\nè stato aggiunto un account creator a suo nome con cui potrà accedere all'applicazione FdmCreator con i privilegi di amministratore.\n\nEcco di seguito le sue credenziali di accesso :\n\nEmail : $email ,\n\nPassword : $password.\n\nCordiali Saluti, Ermes Fdm Express.";
-      await sendResponse(text, email, "Aggiunto come Manager");
+          "Salve,\n\nè stato aggiunto un account Creator a suo nome con cui potrà accedere all'applicazione FdmCreator con i privilegi di amministratore.\n\nEcco di seguito le sue credenziali di accesso :\n\nEmail : $email ,\n\nPassword : $password.\n\nCordiali Saluti, Agostino Burberi.";
+      await sendResponse(text, email, "Aggiunto come Creator");
     }
     return result;
   }
