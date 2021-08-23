@@ -2,16 +2,24 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:fdm_manager/screens/home.dart';
 import 'package:fdm_manager/screens/mainDrawer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer2/mailer.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import '../authentication_service.dart';
+import '../firebaseProjectsManager.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 import 'utilizzo.dart';
 
 class AddVolontario extends StatefulWidget {
   static const String routeName = "/addVolontario";
+  final FirebaseAuth auth =
+      FirebaseAuth.instanceFor(app: FirebaseProjectsManager().getDesktopApp());
+  final FirebaseDatabase database =
+      FirebaseDatabase(app: FirebaseProjectsManager().getDesktopApp());
 
   @override
   _AddVolontarioState createState() => _AddVolontarioState();
@@ -49,11 +57,60 @@ class _AddVolontarioState extends State<AddVolontario> {
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  addDataToDatabase(String email, String name) {
+  addDataToDatabase(String email, String name, String id) {
     final databaseReference =
         FirebaseDatabase.instance.reference().child("Volontari");
     databaseReference.update({name: email});
+    final dbReference = widget.database.reference();
+    dbReference.child("$id").set({"data": email});
     return true;
+  }
+
+  getNewUserUid(String email, String password) async {
+    await AuthenticationService(widget.auth)
+        .signIn(email: email, password: password);
+    final String result = widget.auth.currentUser.uid;
+    await AuthenticationService(widget.auth).signOut();
+    return result;
+  }
+
+  String passwordGenerator() {
+    int id = (((DateTime.now().millisecondsSinceEpoch) * 35) / 13579).round();
+    return id.toString();
+  }
+
+  sendResponse(String text, String email, String object) async {
+    var options = new GmailSmtpOptions()
+      ..username = 'ermes.express.fdm@gmail.com'
+      ..password = 'CASTELLO1967';
+    var emailTransport = new SmtpTransport(options);
+    var mail = new Envelope()
+      ..from = 'ermes.express.fdm@gmail.com'
+      ..recipients.add(email)
+      ..subject = object
+      ..text = text;
+    bool result;
+    await emailTransport.send(mail).then((mail) async {
+      result = true;
+    }).catchError((e) async {
+      print("Error while sending response email : $e");
+      result = false;
+    });
+    return result;
+  }
+
+  addVolounteer(String email, String name) async {
+    final String password = passwordGenerator();
+    final String result =
+        await AuthenticationService(widget.auth).signUp(email, password);
+    if (result == "Operazione effettuata con successo!") {
+      final String id = await getNewUserUid(email, password);
+      addDataToDatabase(email, name, id);
+      final String text =
+          "Salve,\n\nè stato aggiunto un account Volontario a suo nome con cui potrà accedere all'applicazione fdmDesktop sul computer di Barbiana.\n\nEcco di seguito le sue credenziali di accesso :\n\nEmail : $email ,\n\nPassword : $password.\n\nCordiali Saluti, Agostino Burberi.";
+      await sendResponse(text, email, "Aggiunto come Volontario");
+    }
+    return result;
   }
 
   @override
@@ -193,7 +250,7 @@ class _AddVolontarioState extends State<AddVolontario> {
                     await dialog.show();
                     final String email = _emailController.text.trim();
                     final String name = _nameController.text.trim();
-                    bool result = addDataToDatabase(email, name);
+                    bool result = addVolounteer(email, name);
                     await dialog.hide();
                     if (Platform.isIOS) {
                       showCupertinoDialog(
