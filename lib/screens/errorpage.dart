@@ -95,7 +95,6 @@ class _ErrorPageState extends State<ErrorPage> {
                 onPressed: () async {
                   final String res =
                       await AuthenticationService(_auth).resetPassword(email);
-                  print(res);
                   final snackBar = SnackBar(
                     content: Text(res),
                     duration: Duration(seconds: 2),

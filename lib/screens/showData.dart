@@ -646,7 +646,6 @@ class _DataLoaderState extends State<DataLoader> {
                     width: width * .95,
                   );
                 } else if (snapshot.hasError) {
-                  print("err : ${snapshot.error}");
                   return Text(
                     "Errore nel caricamento dei dati!",
                     style: infoStyle,

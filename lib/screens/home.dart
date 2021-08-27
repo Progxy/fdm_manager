@@ -95,8 +95,6 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   );
-                } else if (snapshot.hasError) {
-                  print("Error : ${snapshot.error}");
                 }
                 return Container();
               },
@@ -426,7 +424,6 @@ class _HomeState extends State<Home> {
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  print("err : ${snapshot.error}");
                   return Text(
                     "error loading data!",
                     style: infoStyle,
@@ -456,7 +453,6 @@ class _HomeState extends State<Home> {
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  print("err : ${snapshot.error}");
                   return Text(
                     "error loading data!",
                     style: infoStyle,
