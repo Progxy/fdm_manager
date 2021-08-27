@@ -175,6 +175,20 @@ class DatabaseInfo {
     return result;
   }
 
+  getVolontari() async {
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    Map result;
+    await database
+        .reference()
+        .child("Volontari")
+        .orderByValue()
+        .once()
+        .then((DataSnapshot snapshot) {
+      result = new Map.from(snapshot.value);
+    });
+    return result;
+  }
+
   getRichiesteVisita() async {
     final FirebaseDatabase database = FirebaseDatabase.instance;
     Map result;

@@ -31,7 +31,14 @@ class _DataLoaderState extends State<DataLoader> {
     "FeedBack",
     "Aiuto",
   ];
-  final List types = ["Tessere", "Libri", "Contributi", "Rinnovi", "Incassi"];
+  final List types = [
+    "Tessere",
+    "Libri",
+    "Contributi",
+    "Rinnovi",
+    "Incassi",
+    "Volontari"
+  ];
   String choice = "Tessere";
 
   void choiceAction(String choice) async {
@@ -462,7 +469,6 @@ class _DataLoaderState extends State<DataLoader> {
             ], rows: content),
           ),
         );
-
         break;
       case "Incassi":
         final Map incassi = await DatabaseInfo().getIncassi();
@@ -509,6 +515,39 @@ class _DataLoaderState extends State<DataLoader> {
               DataColumn(
                 label: Text(
                   "Fatto Da",
+                  style: titleStyle,
+                ),
+              ),
+            ], rows: content),
+          ),
+        );
+        break;
+      case "Volontari":
+        final Map volontari = await DatabaseInfo().getVolontari();
+        List<DataRow> content = [];
+        for (String name in volontari.keys.toList()) {
+          final String email = volontari[name];
+          content.add(
+            DataRow(cells: [
+              DataCell(Text(name)),
+              DataCell(Text(email)),
+            ]),
+          );
+        }
+        contents = ConstrainedBox(
+          constraints: BoxConstraints.tight(Size(width * .95, height)),
+          child: InteractiveViewer(
+            constrained: false,
+            child: DataTable(columns: [
+              DataColumn(
+                label: Text(
+                  "Nome",
+                  style: titleStyle,
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Email",
                   style: titleStyle,
                 ),
               ),
